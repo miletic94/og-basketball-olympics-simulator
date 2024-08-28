@@ -74,3 +74,6 @@ export class PointsCalculator {
     }
   }
 }
+
+// TODO: Competition weight (2.0 for Olympics).
+// TODO: Round weight (1:1, 2:2, 3:4, 4:6, 5:6); the semi-finals are usually round 3 or 4, while the final is usually round 4 or 5

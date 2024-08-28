@@ -1,8 +1,8 @@
 import {
   PointsCalculator,
   VictoryMargin,
-} from "../../src/fiba-ranking/PointsCalculator";
-import type { TeamScore } from "../../src/fiba-ranking/PointsCalculator";
+} from "../../src/fiba-ranking/fiba-points-calculator";
+import type { TeamScore } from "../../src/fiba-ranking/fiba-points-calculator";
 describe("PointsCalculator", () => {
   let winningTeamScore: TeamScore;
   let losingTeamScore: TeamScore;
