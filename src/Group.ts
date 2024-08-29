@@ -1,8 +1,12 @@
 import { TeamGroupComparer } from "./comparers/Comparers";
-import { sort, RankingTable } from "./sorting-strategies/sorting-strategies";
+import {
+  sort,
+  ITeamRanker,
+  SortFunction,
+} from "./sorting-strategies/sorting-strategies";
 import { Team } from "./Team";
 
-export class Group implements RankingTable {
+export class Group implements ITeamRanker {
   name: string;
   teams: Team[];
 
@@ -11,11 +15,8 @@ export class Group implements RankingTable {
     this.teams = teams;
   }
 
-  // TODO: Make better
-  // TODO: To make this a real strategy, you could put it as a constructor parameter
-  rankTeams() {
-    const res = sort(this.teams, new TeamGroupComparer());
-    console.log(res);
-    return res;
+  rankTeams(sortFunction: SortFunction = sort) {
+    sortFunction(this.teams, new TeamGroupComparer());
+    console.log(this.teams);
   }
 }
