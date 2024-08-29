@@ -1,29 +1,40 @@
 import { IComparer } from "../comparers/Comparers";
 import { Team } from "../Team";
+import { TeamRepository } from "../TeamRepository";
 
 //TODO: Move this?
 export interface ITeamRanker {
   rankTeams(sortFunction: SortFunction): void;
 }
 
-export type SortFunction = (teams: Team[], comparer: IComparer<Team>) => void;
+export type SortFunction = (
+  teamNames: string[] /*TODO: Make TeamNames*/,
+  comparer: IComparer<Team>,
+  teamRepo: TeamRepository
+) => void;
 
 export const sort: SortFunction = (
-  teams: Team[],
-  comparer: IComparer<Team>
+  teamNames: string[],
+  comparer: IComparer<Team>,
+  teamRepo: TeamRepository
 ) => {
-  function merge(teams: Team[], left: number, mid: number, right: number) {
+  function merge(
+    teamsNames: string[],
+    left: number,
+    mid: number,
+    right: number
+  ) {
     const leftArrayLength = mid - left + 1;
     const rightArrayLength = right - mid;
 
-    const leftArray = new Array(leftArrayLength);
-    const rightArray = new Array(rightArrayLength);
+    const leftArray: string[] = new Array(leftArrayLength);
+    const rightArray: string[] = new Array(rightArrayLength);
 
     for (let i = 0; i < leftArrayLength; i++) {
-      leftArray[i] = teams[left + i];
+      leftArray[i] = teamsNames[left + i];
     }
     for (let j = 0; j < rightArrayLength; j++) {
-      rightArray[j] = teams[mid + 1 + j];
+      rightArray[j] = teamsNames[mid + 1 + j];
     }
 
     let i = 0,
@@ -31,37 +42,42 @@ export const sort: SortFunction = (
       k = left;
 
     while (i < leftArrayLength && j < rightArrayLength) {
-      if (comparer.compare(leftArray[i], rightArray[j]) >= 0) {
-        teams[k] = leftArray[i]; // TODO: Typescript bug? If I put array[k] = leftArray[i] here it won't throw an error
+      if (
+        comparer.compare(
+          teamRepo.getTeam(leftArray[i]),
+          teamRepo.getTeam(rightArray[j])
+        ) >= 0
+      ) {
+        teamsNames[k] = leftArray[i]; // TODO: Typescript bug? If I put array[k] = leftArray[i] here it won't throw an error
         i++;
       } else {
-        teams[k] = rightArray[j];
+        teamsNames[k] = rightArray[j];
         j++;
       }
       k++;
     }
 
     while (i < leftArrayLength) {
-      teams[k] = leftArray[i];
+      teamsNames[k] = leftArray[i];
       i++;
       k++;
     }
 
     while (j < rightArrayLength) {
-      teams[k] = rightArray[j];
+      teamsNames[k] = rightArray[j];
       j++;
       k++;
     }
   }
 
-  function mergeSort(teams: Team[], left: number, right: number): void {
+  function mergeSort(teamNames: string[], left: number, right: number): void {
     if (left >= right) return;
 
     const mid = Math.floor(left + (right - left) / 2);
-    const L = mergeSort(teams, left, mid);
-    const R = mergeSort(teams, mid + 1, right);
+    const L = mergeSort(teamNames, left, mid);
+    const R = mergeSort(teamNames, mid + 1, right);
 
-    merge(teams, left, mid, right);
+    merge(teamNames, left, mid, right);
   }
-  return mergeSort(teams, 0, teams.length - 1);
+  return mergeSort(teamNames, 0, teamNames.length - 1);
 };

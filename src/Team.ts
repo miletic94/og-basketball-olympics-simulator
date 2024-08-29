@@ -1,16 +1,18 @@
+import { FIBARankingStatistics } from "./FIBARankingStatistics";
 import { TeamGroupStatistics } from "./TeamGroupStatistics";
 
 export class Team {
   name: string;
   ISOCode: string;
   groupStatistics: TeamGroupStatistics;
-  // TODO: This could be TeamStatistics
+  fibaRankingStatistics: FIBARankingStatistics;
 
-  constructor(name: string, ISOCode: string) {
+  constructor(name: string, ISOCode: string, fibaRankingPoints: number) {
     this.name = name;
     this.ISOCode = ISOCode;
     // TODO: This could be injected (DI)
     this.groupStatistics = new TeamGroupStatistics();
+    this.fibaRankingStatistics = new FIBARankingStatistics(fibaRankingPoints);
   }
 }
 
