@@ -2,6 +2,7 @@ import { FibaRankingTable } from "./FIBARankingTable";
 import { Game } from "./Game";
 import { Group } from "./Group";
 import { GroupRankingTable } from "./GroupRankingTable";
+import { MergeSortStrategy } from "./sorting-strategies/sorting-strategies";
 import { Team } from "./Team";
 import { TeamRepository } from "./TeamRepository";
 
@@ -24,14 +25,19 @@ const groupRankingTable = new GroupRankingTable([group]);
 
 const game = new Game("Serbia", "South Sudan");
 game.setResult(100, 80);
-game.on("finish", teamRepo.getTeam("Serbia").resolveGame);
-game.on("finish", teamRepo.getTeam("South Sudan").resolveGame);
+game.registerTeamListeners([
+  teamRepo.getTeam("Serbia"),
+  teamRepo.getTeam("South Sudan"),
+]);
 game.finishGame();
 
 const game2 = new Game("USA", "Puerto Rico");
 game2.setResult(100, 80);
-game2.on("finish", teamRepo.getTeam("USA").resolveGame);
-game2.on("finish", teamRepo.getTeam("Puerto Rico").resolveGame);
+game2.registerTeamListeners([
+  teamRepo.getTeam("USA"),
+  teamRepo.getTeam("Puerto Rico"),
+]);
+
 game2.finishGame();
 
 const fibaRankingTable = new FibaRankingTable(
@@ -39,7 +45,7 @@ const fibaRankingTable = new FibaRankingTable(
   teamRepo
 );
 
-group.rankTeams();
+group.rankTeams(new MergeSortStrategy(teamRepo));
 groupRankingTable.displayTable();
 
 // fibaRankingTable.rankTeams();

@@ -1,7 +1,7 @@
 import { TeamFIBARankingComparer } from "./comparers/Comparers";
 import {
+  ISortStrategy,
   ITeamRanker,
-  sort,
   SortFunction,
 } from "./sorting-strategies/sorting-strategies";
 import { Team } from "./Team";
@@ -37,7 +37,7 @@ export class FibaRankingTable implements ITeamRanker {
     console.table(table);
   }
 
-  rankTeams(sortFunction: SortFunction = sort): void {
-    sortFunction(this.teamNames, new TeamFIBARankingComparer(), this.teamRepo);
+  rankTeams(sortingStrategy: ISortStrategy): void {
+    sortingStrategy.sort(this.teamNames, new TeamFIBARankingComparer());
   }
 }

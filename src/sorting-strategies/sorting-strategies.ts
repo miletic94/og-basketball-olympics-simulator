@@ -2,82 +2,83 @@ import { IComparer } from "../comparers/Comparers";
 import { Team } from "../Team";
 import { TeamRepository } from "../TeamRepository";
 
-//TODO: Move this?
-export interface ITeamRanker {
-  rankTeams(sortFunction: SortFunction): void;
-}
-
 export type SortFunction = (
   teamNames: string[] /*TODO: Make TeamNames*/,
-  comparer: IComparer<Team>,
-  teamRepo: TeamRepository
+  comparer: IComparer<Team>
 ) => void;
+//TODO: Move this?
+export interface ITeamRanker {
+  rankTeams(sort: ISortStrategy): void;
+}
 
-export const sort: SortFunction = (
-  teamNames: string[],
-  comparer: IComparer<Team>,
-  teamRepo: TeamRepository
-) => {
-  function merge(
-    teamsNames: string[],
-    left: number,
-    mid: number,
-    right: number
-  ) {
-    const leftArrayLength = mid - left + 1;
-    const rightArrayLength = right - mid;
+export interface ISortStrategy {
+  sort: SortFunction;
+}
 
-    const leftArray: string[] = new Array(leftArrayLength);
-    const rightArray: string[] = new Array(rightArrayLength);
+export class MergeSortStrategy implements ISortStrategy {
+  constructor(private teamRepo: TeamRepository) {}
+  sort = (teamNames: string[], comparer: IComparer<Team>) => {
+    const merge = (
+      teamsNames: string[],
+      left: number,
+      mid: number,
+      right: number
+    ) => {
+      const leftArrayLength = mid - left + 1;
+      const rightArrayLength = right - mid;
 
-    for (let i = 0; i < leftArrayLength; i++) {
-      leftArray[i] = teamsNames[left + i];
-    }
-    for (let j = 0; j < rightArrayLength; j++) {
-      rightArray[j] = teamsNames[mid + 1 + j];
-    }
+      const leftArray: string[] = new Array(leftArrayLength);
+      const rightArray: string[] = new Array(rightArrayLength);
 
-    let i = 0,
-      j = 0,
-      k = left;
+      for (let i = 0; i < leftArrayLength; i++) {
+        leftArray[i] = teamsNames[left + i];
+      }
+      for (let j = 0; j < rightArrayLength; j++) {
+        rightArray[j] = teamsNames[mid + 1 + j];
+      }
 
-    while (i < leftArrayLength && j < rightArrayLength) {
-      if (
-        comparer.compare(
-          teamRepo.getTeam(leftArray[i]),
-          teamRepo.getTeam(rightArray[j])
-        ) >= 0
-      ) {
-        teamsNames[k] = leftArray[i]; // TODO: Typescript bug? If I put array[k] = leftArray[i] here it won't throw an error
+      let i = 0,
+        j = 0,
+        k = left;
+
+      while (i < leftArrayLength && j < rightArrayLength) {
+        if (
+          comparer.compare(
+            this.teamRepo.getTeam(leftArray[i]),
+            this.teamRepo.getTeam(rightArray[j])
+          ) >= 0
+        ) {
+          teamsNames[k] = leftArray[i]; // TODO: Typescript bug? If I put array[k] = leftArray[i] here it won't throw an error
+          i++;
+        } else {
+          teamsNames[k] = rightArray[j];
+          j++;
+        }
+        k++;
+      }
+
+      while (i < leftArrayLength) {
+        teamsNames[k] = leftArray[i];
         i++;
-      } else {
+        k++;
+      }
+
+      while (j < rightArrayLength) {
         teamsNames[k] = rightArray[j];
         j++;
+        k++;
       }
-      k++;
+    };
+
+    function mergeSort(teamNames: string[], left: number, right: number): void {
+      if (left >= right) return;
+
+      const mid = Math.floor(left + (right - left) / 2);
+      mergeSort(teamNames, left, mid);
+      mergeSort(teamNames, mid + 1, right);
+
+      merge(teamNames, left, mid, right);
     }
-
-    while (i < leftArrayLength) {
-      teamsNames[k] = leftArray[i];
-      i++;
-      k++;
-    }
-
-    while (j < rightArrayLength) {
-      teamsNames[k] = rightArray[j];
-      j++;
-      k++;
-    }
-  }
-
-  function mergeSort(teamNames: string[], left: number, right: number): void {
-    if (left >= right) return;
-
-    const mid = Math.floor(left + (right - left) / 2);
-    const L = mergeSort(teamNames, left, mid);
-    const R = mergeSort(teamNames, mid + 1, right);
-
-    merge(teamNames, left, mid, right);
-  }
-  return mergeSort(teamNames, 0, teamNames.length - 1);
-};
+    return mergeSort(teamNames, 0, teamNames.length - 1);
+  };
+}

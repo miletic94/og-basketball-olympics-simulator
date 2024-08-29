@@ -1,4 +1,5 @@
 import EventEmitter from "events";
+import { Team } from "./Team";
 
 //TODO: Move
 export type GameResult = {
@@ -27,6 +28,10 @@ export class Game extends EventEmitter {
     this.result.homeTeamScore = homeTeamScore;
     this.result.awayTeamScore = awayTeamScore;
     this.result.forfeit = forfeit;
+  }
+
+  registerTeamListeners(teams: Team[]) {
+    teams.forEach((team) => this.on("finish", team.resolveGame));
   }
 
   getResult() {

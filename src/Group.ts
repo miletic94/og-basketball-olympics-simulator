@@ -1,10 +1,10 @@
 import { TeamGroupComparer } from "./comparers/Comparers";
 import {
-  sort,
+  ISortStrategy,
   ITeamRanker,
+  MergeSortStrategy,
   SortFunction,
 } from "./sorting-strategies/sorting-strategies";
-import { Team } from "./Team";
 import { TeamRepository } from "./TeamRepository";
 
 export class Group implements ITeamRanker {
@@ -41,7 +41,7 @@ export class Group implements ITeamRanker {
     return table;
   }
 
-  rankTeams(sortFunction: SortFunction = sort) {
-    sortFunction(this.teamNames, new TeamGroupComparer(), this.teamRepo);
+  rankTeams(sortStrategy: ISortStrategy) {
+    sortStrategy.sort(this.teamNames, new TeamGroupComparer());
   }
 }
