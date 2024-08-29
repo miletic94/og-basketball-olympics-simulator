@@ -1,4 +1,6 @@
+import { EventEmitterAsyncResource } from "events";
 import { IComparable } from "./comparers/Comparers";
+import { GameResult } from "./Game";
 import { Points } from "./Team";
 
 export class TeamGroupStatistics implements IComparable<TeamGroupStatistics> {
@@ -59,6 +61,39 @@ export class TeamGroupStatistics implements IComparable<TeamGroupStatistics> {
   }
   getPoints() {
     return this.points;
+  }
+
+  // TODO: See if this can be written better
+  resolveGame(teamName: string, result: GameResult) {
+    const [teamScore, otherScore] = this.identifyTeamsScore(teamName, result);
+    const difference = teamScore - otherScore;
+    this.handleScoreDifference(teamScore, otherScore, result.forfeit);
+  }
+
+  identifyTeamsScore(
+    teamName: string,
+    result: GameResult
+  ): [teamScore: number, otherScore: number] {
+    if (result.awayTeam === teamName)
+      return [result.awayTeamScore, result.homeTeamScore];
+    else if (result.homeTeam === teamName)
+      return [result.homeTeamScore, result.awayTeamScore];
+    else throw new Error(`Team with name ${teamName} doesn't exist in result`);
+  }
+
+  private handleScoreDifference(
+    teamScore: number,
+    otherScore: number,
+    forfeit: boolean
+  ) {
+    const difference = teamScore - otherScore;
+    if (difference > 0) {
+      forfeit ? this.winByForfeit() : this.winGame(teamScore, otherScore);
+    } else if (difference < 0) {
+      forfeit ? this.forfeit() : this.loseGame(teamScore, otherScore);
+    } else {
+      this.drawGame(teamScore, otherScore);
+    }
   }
 
   getTableData() {

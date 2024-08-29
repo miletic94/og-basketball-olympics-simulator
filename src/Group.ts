@@ -34,6 +34,7 @@ export class Group implements ITeamRanker {
         losses: team.groupStatistics.losses,
         pointsForwarded: team.groupStatistics.pointsForwarded,
         pointsAccepted: team.groupStatistics.pointsAccepted,
+        pointDifference: team.groupStatistics.getPointDifference(),
         points: team.groupStatistics.points,
       };
     }

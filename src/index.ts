@@ -1,4 +1,5 @@
 import { FibaRankingTable } from "./FIBARankingTable";
+import { Game } from "./Game";
 import { Group } from "./Group";
 import { GroupRankingTable } from "./GroupRankingTable";
 import { Team } from "./Team";
@@ -21,10 +22,17 @@ const group = new Group(
 
 const groupRankingTable = new GroupRankingTable([group]);
 
-teamRepo.getTeam("Serbia").groupStatistics.winGame(100, 90);
-teamRepo.getTeam("South Sudan").groupStatistics.loseGame(90, 100);
-teamRepo.getTeam("USA").groupStatistics.loseGame(80, 100);
-teamRepo.getTeam("Puerto Rico").groupStatistics.winGame(100, 80);
+const game = new Game("Serbia", "South Sudan");
+game.setResult(100, 80);
+game.on("finish", teamRepo.getTeam("Serbia").resolveGame);
+game.on("finish", teamRepo.getTeam("South Sudan").resolveGame);
+game.finishGame();
+
+const game2 = new Game("USA", "Puerto Rico");
+game2.setResult(100, 80);
+game2.on("finish", teamRepo.getTeam("USA").resolveGame);
+game2.on("finish", teamRepo.getTeam("Puerto Rico").resolveGame);
+game2.finishGame();
 
 const fibaRankingTable = new FibaRankingTable(
   ["Serbia", "South Sudan", "USA", "Puerto Rico"],

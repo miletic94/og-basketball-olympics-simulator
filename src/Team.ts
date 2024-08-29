@@ -1,4 +1,5 @@
 import { FIBARankingStatistics } from "./FIBARankingStatistics";
+import { GameResult } from "./Game";
 import { TeamGroupStatistics } from "./TeamGroupStatistics";
 
 export class Team {
@@ -14,6 +15,10 @@ export class Team {
     this.groupStatistics = new TeamGroupStatistics();
     this.fibaRankingStatistics = new FIBARankingStatistics(fibaRankingPoints);
   }
+
+  resolveGame = (result: GameResult) => {
+    this.groupStatistics.resolveGame(this.name, result);
+  };
 }
 
 // TODO: Move this?
