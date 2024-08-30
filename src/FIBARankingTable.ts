@@ -3,7 +3,7 @@ import {
   ISortStrategy,
   ITeamRanker,
   SortFunction,
-} from "./sorting-strategies/sorting-strategies";
+} from "./strategies/merge-sorting.strategy";
 import { Team } from "./Team";
 import { TeamRepository } from "./TeamRepository";
 

@@ -2,9 +2,7 @@ import { TeamGroupComparer } from "./comparers/Comparers";
 import {
   ISortStrategy,
   ITeamRanker,
-  MergeSortStrategy,
-  SortFunction,
-} from "./sorting-strategies/sorting-strategies";
+} from "./strategies/merge-sorting.strategy";
 import { TeamRepository } from "./TeamRepository";
 
 export class Group implements ITeamRanker {

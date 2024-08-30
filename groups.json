@@ -1,25 +1,25 @@
 {
   "A": [
     {
-      "Team": "Kanada",
+      "Team": "Canada",
       "ISOCode": "CAN",
       "FIBARanking": 7,
       "Points": 746.2
     },
     {
-      "Team": "Australija",
+      "Team": "Australia",
       "ISOCode": "AUS",
       "FIBARanking": 5,
       "Points": 756.3
     },
     {
-      "Team": "Grčka",
+      "Team": "Greece",
       "ISOCode": "GRE",
       "FIBARanking": 14,
       "Points": 641.6
     },
     {
-      "Team": "Španija",
+      "Team": "Spain",
       "ISOCode": "ESP",
       "FIBARanking": 2,
       "Points": 773.9
@@ -27,19 +27,19 @@
   ],
   "B": [
     {
-      "Team": "Nemačka",
+      "Team": "Germany",
       "ISOCode": "GER",
       "FIBARanking": 3,
       "Points": 759.0
     },
     {
-      "Team": "Francuska",
+      "Team": "France",
       "ISOCode": "FRA",
       "FIBARanking": 9,
       "Points": 737.1
     },
     {
-      "Team": "Brazil",
+      "Team": "Brasil",
       "ISOCode": "BRA",
       "FIBARanking": 12,
       "Points": 660.4
@@ -53,25 +53,25 @@
   ],
   "C": [
     {
-      "Team": "Sjedinjene Države",
+      "Team": "USA",
       "ISOCode": "USA",
       "FIBARanking": 1,
       "Points": 784.8
     },
     {
-      "Team": "Srbija",
+      "Team": "Serbia",
       "ISOCode": "SRB",
       "FIBARanking": 4,
       "Points": 757.9
     },
     {
-      "Team": "Južni Sudan",
+      "Team": "South Sudan",
       "ISOCode": "SSD",
       "FIBARanking": 33,
       "Points": 371.4
     },
     {
-      "Team": "Puerto Riko",
+      "Team": "Puerto Rico",
       "ISOCode": "PRI",
       "FIBARanking": 16,
       "Points": 608.4

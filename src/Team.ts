@@ -5,12 +5,19 @@ import { TeamGroupStatistics } from "./TeamGroupStatistics";
 export class Team {
   name: string;
   ISOCode: string;
+  group: string;
   groupStatistics: TeamGroupStatistics;
   fibaRankingStatistics: FIBARankingStatistics;
 
-  constructor(name: string, ISOCode: string, fibaRankingPoints: number) {
+  constructor(
+    name: string,
+    ISOCode: string,
+    group: string,
+    fibaRankingPoints: number
+  ) {
     this.name = name;
     this.ISOCode = ISOCode;
+    this.group = group;
     // TODO: This could be injected (DI)
     this.groupStatistics = new TeamGroupStatistics();
     this.fibaRankingStatistics = new FIBARankingStatistics(fibaRankingPoints);
