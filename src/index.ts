@@ -54,4 +54,10 @@ import { Tournament } from "./Tournament";
 // fibaRankingTable.displayTable();
 
 const teamRepo = TeamRepository.getInstance(dataLoader);
-console.log(teamRepo.getAllTeams());
+console.time("test1");
+const tournament = new Tournament(teamRepo);
+console.timeEnd("test1");
+
+console.time("test2");
+tournament.createRounds();
+console.timeEnd("test2");

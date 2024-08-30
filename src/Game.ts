@@ -10,14 +10,20 @@ export type GameResult = {
   forfeit: boolean;
 };
 
+export type GamePair = [homeTeam: string, awayTeam: string];
+
 export class Game extends EventEmitter {
   private result: GameResult;
+  homeTeam: string;
+  awayTeam: string;
 
-  constructor(homeTeam: string, awayTeam: string) {
+  constructor(teams: GamePair) {
     super();
+    this.homeTeam = teams[0];
+    this.awayTeam = teams[1];
     this.result = {
-      homeTeam,
-      awayTeam,
+      homeTeam: this.homeTeam,
+      awayTeam: this.awayTeam,
       homeTeamScore: 0,
       awayTeamScore: 0,
       forfeit: false,

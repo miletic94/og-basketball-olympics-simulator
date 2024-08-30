@@ -17,6 +17,7 @@ export class TeamRepository {
     return TeamRepository.instance;
   }
 
+  //TODO:  Maybe put this into different class (together with dataLoader function) to make that class responsible for loading the data and this one only for being repository
   private loadTeams() {
     const data = this.dataLoader("./groups.json");
 

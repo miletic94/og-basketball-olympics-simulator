@@ -9,6 +9,9 @@ export class Round extends EventEmitter {
   ) {
     super();
   }
+  addGame(game: Game) {
+    this.games.push(game);
+  }
 
   getName() {
     return this.name;
