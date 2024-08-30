@@ -12,6 +12,7 @@ export type GameResult = {
 
 export type GamePair = [homeTeam: string, awayTeam: string];
 
+// TODO: Rename to Match
 export class Game extends EventEmitter {
   private result: GameResult;
   homeTeam: string;

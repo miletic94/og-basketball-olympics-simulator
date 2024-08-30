@@ -2,11 +2,10 @@ import { TeamFIBARankingComparer } from "./comparers/Comparers";
 import {
   ISortStrategy,
   ITeamRanker,
-  SortFunction,
 } from "./strategies/merge-sorting.strategy";
-import { Team } from "./Team";
 import { TeamRepository } from "./TeamRepository";
 
+// TODO: This class is probably useless
 export class FibaRankingTable implements ITeamRanker {
   teamNames: string[];
   constructor(teamNames: string[], private teamRepo: TeamRepository) {

@@ -1,5 +1,6 @@
 import { Group } from "./Group";
 
+// TODO: This class is probably useless
 export class GroupRankingTable {
   groups: Group[];
   constructor(groups: Group[]) {
