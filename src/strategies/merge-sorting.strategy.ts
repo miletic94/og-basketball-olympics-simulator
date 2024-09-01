@@ -1,19 +1,6 @@
-import { IComparer } from "../comparers/Comparers";
+import { IComparer, ISortStrategy } from "../../types";
 import { Team } from "../Team";
 import { TeamRepository } from "../TeamRepository";
-
-export type SortFunction = (
-  teamNames: string[] /*TODO: Make TeamNames*/,
-  comparer: IComparer<Team>
-) => void;
-//TODO: Move this?
-export interface ITeamRanker {
-  rankTeams(sort: ISortStrategy): void;
-}
-
-export interface ISortStrategy {
-  sort: SortFunction;
-}
 
 export class MergeSortStrategy implements ISortStrategy {
   constructor(private teamRepo: TeamRepository) {}

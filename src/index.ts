@@ -7,6 +7,7 @@ import { MergeSortStrategy } from "./strategies/merge-sorting.strategy";
 import { Team } from "./Team";
 import { TeamRepository } from "./TeamRepository";
 import { Tournament } from "./Tournament";
+import { EliminationStage } from "./tournament-stages/elimination.stage";
 
 // const teamRepo = new TeamRepository(
 //   new Map([
@@ -53,11 +54,16 @@ import { Tournament } from "./Tournament";
 // fibaRankingTable.rankTeams();
 // fibaRankingTable.displayTable();
 
-const teamRepo = TeamRepository.getInstance(dataLoader);
-console.time("test1");
-const tournament = new Tournament(teamRepo);
-console.timeEnd("test1");
+// const teamRepo = TeamRepository.getInstance(dataLoader);
+// console.time("test1");
+// const tournament = new Tournament(teamRepo);
+// tournament.createGroups();
+// tournament.createGroups();
+// console.log(tournament.getGroups());
+// tournament.setStage(new EliminationStage(tournament));
+// tournament.createGroups();
+// tournament.createRounds();
 
-console.time("test2");
-tournament.createRounds();
-console.timeEnd("test2");
+// console.log(tournament.getGroups());
+// console.log(tournament.getGroups());
+// console.timeEnd("test1");

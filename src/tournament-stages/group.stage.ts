@@ -1,15 +1,23 @@
-import { Game, GamePair } from "../Game";
+import { GamePair, IStage } from "../../types";
+import { Game } from "../Game";
+import { Group } from "../Group";
 import { Round } from "../Round";
+import { TeamRepository } from "../TeamRepository";
 import { Tournament } from "../Tournament";
-
-// TODO: Move
-export interface IStage {
-  playRounds(): void;
-  createRounds(): void;
-}
 
 export class GroupStage implements IStage {
   constructor(private tournamentContext: Tournament) {}
+
+  createGroups(teamRepo: TeamRepository) {
+    const groups = this.tournamentContext.getGroups();
+    const teams = teamRepo.getAllTeams();
+    teams.forEach((team) => {
+      if (!groups.has(team.group)) {
+        groups.set(team.group, new Group(team.group, []));
+      }
+      groups.get(team.group)!.addTeam(team.name);
+    });
+  }
 
   createRounds() {
     const roundGenerators: Generator<GamePair[], void, unknown>[] = [];

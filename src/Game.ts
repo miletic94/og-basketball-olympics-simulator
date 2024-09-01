@@ -1,16 +1,6 @@
 import EventEmitter from "events";
 import { Team } from "./Team";
-
-//TODO: Move
-export type GameResult = {
-  homeTeam: string;
-  awayTeam: string;
-  homeTeamScore: number;
-  awayTeamScore: number;
-  forfeit: boolean;
-};
-
-export type GamePair = [homeTeam: string, awayTeam: string];
+import type { GamePair, GameResult } from "../types";
 
 // TODO: Rename to Match
 export class Game extends EventEmitter {

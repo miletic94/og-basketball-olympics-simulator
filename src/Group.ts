@@ -15,7 +15,9 @@ export class Group implements ITeamRanker {
   }
 
   addTeam(teamName: string) {
-    this.teamNames.push(teamName);
+    if (!this.teamNames.includes(teamName)) {
+      this.teamNames.push(teamName);
+    }
   }
 
   rankTeams(sortStrategy: ISortStrategy) {
