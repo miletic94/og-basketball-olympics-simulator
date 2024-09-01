@@ -8,6 +8,9 @@ import { Team } from "./Team";
 import { TeamRepository } from "./TeamRepository";
 import { Tournament } from "./Tournament";
 import { EliminationStage } from "./tournament-stages/elimination.stage";
+import { createPairsFromList } from "./utils/createPairsFromLIst.util";
+import { randomBetween } from "./utils/randomBetween.util";
+import { randomizePairs } from "./utils/randomizePairs.util";
 
 // const teamRepo = new TeamRepository(
 //   new Map([
@@ -54,16 +57,24 @@ import { EliminationStage } from "./tournament-stages/elimination.stage";
 // fibaRankingTable.rankTeams();
 // fibaRankingTable.displayTable();
 
-// const teamRepo = TeamRepository.getInstance(dataLoader);
-// console.time("test1");
-// const tournament = new Tournament(teamRepo);
-// tournament.createGroups();
-// tournament.createGroups();
-// console.log(tournament.getGroups());
-// tournament.setStage(new EliminationStage(tournament));
-// tournament.createGroups();
-// tournament.createRounds();
+const teamRepo = TeamRepository.getInstance(dataLoader);
 
-// console.log(tournament.getGroups());
-// console.log(tournament.getGroups());
-// console.timeEnd("test1");
+const tournament = new Tournament(teamRepo);
+tournament.createGroups();
+console.log(tournament.getGroups());
+tournament.setStage(new EliminationStage(tournament));
+tournament.createGroups();
+
+tournament.createRounds();
+
+console.log([...tournament.getRounds()][0][1]);
+
+// 'Canada', 'Australia', 'Greece'
+// 'Germany', 'France', 'Brasil'
+//  'USA', 'Serbia'
+
+// 1. 'Canada', 2. 'Germany',
+// 3. 'USA'     4.'Australia',
+// 5. 'France', 6. 'Serbia'
+// 7. 'Greece', 8. 'Brasil'
+// [1, 7], [3, 6], [2, 8], [4, 5]

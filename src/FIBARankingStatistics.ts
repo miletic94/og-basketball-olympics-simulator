@@ -1,4 +1,4 @@
-import { IComparable } from "./comparers/Comparers";
+import { IComparable } from "../types";
 
 export class FIBARankingStatistics
   implements IComparable<FIBARankingStatistics>

@@ -1,5 +1,5 @@
+import { GameResult } from "../types";
 import { FIBARankingStatistics } from "./FIBARankingStatistics";
-import { GameResult } from "./Game";
 import { TeamGroupStatistics } from "./TeamGroupStatistics";
 
 export class Team {

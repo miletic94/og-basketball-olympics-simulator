@@ -1,7 +1,5 @@
-import { EventEmitterAsyncResource } from "events";
-import { IComparable } from "./comparers/Comparers";
-import { GameResult } from "./Game";
 import { Points } from "./Team";
+import { GameResult, IComparable } from "../types";
 
 export class TeamGroupStatistics implements IComparable<TeamGroupStatistics> {
   gamesPlayed: number;

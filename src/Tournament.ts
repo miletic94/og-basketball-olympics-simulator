@@ -1,7 +1,8 @@
 import { TeamRepository } from "./TeamRepository";
 import { Group } from "./Group";
 import { Round } from "./Round";
-import { GroupStage, IStage } from "./tournament-stages/group.stage";
+import { GroupStage } from "./tournament-stages/group.stage";
+import { IStage } from "../types";
 
 export class Tournament {
   private groups: Map<string, Group> = new Map();
@@ -30,11 +31,14 @@ export class Tournament {
   getRounds() {
     return this.rounds;
   }
+  clearRounds() {
+    this.rounds = new Map();
+  }
   createGroups() {
     this.stage.createGroups(this.teamRepo);
   }
 
   createRounds() {
-    this.stage.createRounds();
+    this.stage.createRounds(this.teamRepo);
   }
 }

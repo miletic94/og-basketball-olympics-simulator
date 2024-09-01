@@ -1,5 +1,5 @@
+import { DataLoader, TeamData } from "../types";
 import { Team } from "./Team";
-import { DataLoader, TeamData } from "./strategies/data-loading.strategy";
 
 export class TeamRepository {
   private static instance: TeamRepository;
@@ -36,6 +36,14 @@ export class TeamRepository {
     const team = this.teams.get(name);
     if (team === undefined) throw Error(`Team with name ${name} doesn't exist`);
     return team;
+  }
+
+  getTeamsByNames(teamNames: string[]) {
+    return teamNames.map((name) => {
+      const team = this.teams.get(name);
+      if (!team) throw new Error(`No team with name ${name}`);
+      return team;
+    });
   }
 
   // TODO: Delete if not needed
