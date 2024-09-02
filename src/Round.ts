@@ -1,25 +1,25 @@
 import EventEmitter from "events";
-import { Game } from "./Game";
+import { Match } from "./Match";
 
 export class Round extends EventEmitter {
   constructor(
     public name: string,
     private weight: number /*This is to later calculate FIBA rankings since rounds have different weights in a formula */,
-    private games: Game[]
+    private matches: Match[]
   ) {
     super();
   }
-  addGame(game: Game) {
-    this.games.push(game);
+  addMatch(match: Match) {
+    this.matches.push(match);
   }
 
-  getName() {
-    return this.name;
-  }
   getWeight() {
     return this.weight;
   }
-  getGames() {
-    return this.games;
+  getMatches() {
+    return this.matches;
+  }
+  getRoundLength() {
+    return this.matches.length;
   }
 }

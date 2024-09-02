@@ -1,5 +1,6 @@
+import { DrawingHat } from "./DrawingHat";
 import { FibaRankingTable } from "./FIBARankingTable";
-import { Game } from "./Game";
+import { Match } from "./Match";
 import { Group } from "./Group";
 import { GroupRankingTable } from "./GroupRankingTable";
 import { dataLoader } from "./strategies/data-loading.strategy";
@@ -61,20 +62,70 @@ const teamRepo = TeamRepository.getInstance(dataLoader);
 
 const tournament = new Tournament(teamRepo);
 tournament.createGroups();
-console.log(tournament.getGroups());
-tournament.setStage(new EliminationStage(tournament));
+// console.log(tournament.getGroups());
+
+// 1 Round
+tournament.setFirstRound();
+let round = tournament.getRound();
+
+round.getMatches().forEach((game) => {
+  game.setResult(randomBetween(80, 120), randomBetween(80, 120));
+  //   console.log(game.getResult());
+  game.finishGroupMatch();
+});
+
+tournament.getGroups().forEach((group) => {
+  group.rankTeams(new MergeSortStrategy(teamRepo));
+  //   console.log(group);
+});
+
+// 2 Round
+tournament.setNextRound();
+round = tournament.getRound();
+
+tournament.playRound();
+
+// 3 Round
+tournament.setNextRound();
+round = tournament.getRound();
+
+tournament.playRound();
+
+tournament.rankTeams();
+// EliminationStage
+tournament.setStage(
+  new EliminationStage(tournament, new DrawingHat(), teamRepo)
+);
 tournament.createGroups();
 
-tournament.createRounds();
+// quarter finals
+tournament.setFirstRound();
+round = tournament.getRound();
 
-console.log([...tournament.getRounds()][0][1]);
+console.log("quarter finals");
 
-// 'Canada', 'Australia', 'Greece'
-// 'Germany', 'France', 'Brasil'
-//  'USA', 'Serbia'
+tournament.playRound();
 
-// 1. 'Canada', 2. 'Germany',
-// 3. 'USA'     4.'Australia',
-// 5. 'France', 6. 'Serbia'
-// 7. 'Greece', 8. 'Brasil'
-// [1, 7], [3, 6], [2, 8], [4, 5]
+// semi finals
+tournament.setNextRound();
+round = tournament.getRound();
+
+console.log("semi finals");
+
+tournament.playRound();
+tournament.rankTeams();
+
+// finals
+tournament.setNextRound();
+round = tournament.getRound();
+
+console.log("finals");
+
+tournament.playRound();
+
+tournament.rankTeams();
+console.log(tournament.getGroups());
+
+// SLOŽI
+// rankGroups only at the finish of a stage
+// Control stage transition

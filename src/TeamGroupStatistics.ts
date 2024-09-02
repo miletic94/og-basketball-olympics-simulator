@@ -1,8 +1,9 @@
 import { Points } from "./Team";
-import { GameResult, IComparable } from "../types";
+import { IComparable } from "../types";
+import { MatchResult } from "./MatchResult";
 
 export class TeamGroupStatistics implements IComparable<TeamGroupStatistics> {
-  gamesPlayed: number;
+  matchesPlayed: number;
   wins: number;
   losses: number;
   pointsForwarded: number;
@@ -10,7 +11,7 @@ export class TeamGroupStatistics implements IComparable<TeamGroupStatistics> {
   points: number;
 
   constructor() {
-    this.gamesPlayed = 0;
+    this.matchesPlayed = 0;
     this.wins = 0;
     this.losses = 0;
     this.pointsForwarded = 0;
@@ -18,11 +19,11 @@ export class TeamGroupStatistics implements IComparable<TeamGroupStatistics> {
     this.points = 0;
   }
 
-  addGamePlayed() {
-    this.gamesPlayed += 1;
+  addMatchesPlayed() {
+    this.matchesPlayed += 1;
   }
-  getGamesPlayed() {
-    return this.gamesPlayed;
+  getMatchesPlayed() {
+    return this.matchesPlayed;
   }
   addWin() {
     this.wins += 1;
@@ -61,90 +62,74 @@ export class TeamGroupStatistics implements IComparable<TeamGroupStatistics> {
     return this.points;
   }
 
-  // TODO: See if this can be written better
-  resolveGame(teamName: string, result: GameResult) {
-    const [teamScore, otherScore] = this.identifyTeamsScore(teamName, result);
-    const difference = teamScore - otherScore;
-    this.handleScoreDifference(teamScore, otherScore, result.forfeit);
-  }
-
-  identifyTeamsScore(
-    teamName: string,
-    result: GameResult
-  ): [teamScore: number, otherScore: number] {
-    if (result.awayTeam === teamName)
-      return [result.awayTeamScore, result.homeTeamScore];
-    else if (result.homeTeam === teamName)
-      return [result.homeTeamScore, result.awayTeamScore];
-    else throw new Error(`Team with name ${teamName} doesn't exist in result`);
-  }
-
-  private handleScoreDifference(
-    teamScore: number,
-    otherScore: number,
-    forfeit: boolean
-  ) {
-    const difference = teamScore - otherScore;
-    if (difference > 0) {
-      forfeit ? this.winByForfeit() : this.winGame(teamScore, otherScore);
-    } else if (difference < 0) {
-      forfeit ? this.forfeit() : this.loseGame(teamScore, otherScore);
+  resolveMatch(teamName: string, result: MatchResult) {
+    if (result.winner === null) {
+      this.drawMatch(teamName, result);
+    } else if (result.winner === teamName) {
+      this.winMatch(teamName, result);
     } else {
-      this.drawGame(teamScore, otherScore);
+      this.loseMatch(teamName, result);
     }
   }
 
-  getTableData() {
-    return {
-      gamesPlayed: this.gamesPlayed,
-      wins: this.wins,
-      losses: this.losses,
-      pointsForwarded: this.pointsForwarded,
-      pointsAccepted: this.pointsAccepted,
-      pointDifference: this.getPointDifference(),
-      points: this.points,
-    };
-  }
-  // TODO: This could be events that game emits
-  winGame(pointsForwarded: number, pointsAccepted: number) {
+  private winMatch(name: string, result: MatchResult) {
+    const pointsForwarded = result.getTeamScore(name);
+    const pointsAccepted = result.getOtherTeamScore(name);
+
     if (pointsForwarded < pointsAccepted)
       throw new Error("Points forwarded is less than points accepted");
-    this.addGamePlayed();
+    if (result.forfeit) {
+      this.winByForfeit();
+      return;
+    }
+
+    this.addMatchesPlayed();
     this.addWin();
     this.addPointsForwarded(pointsForwarded);
     this.addPointsAccepted(pointsAccepted);
     this.addPoints(Points.WIN_POINTS);
   }
 
-  loseGame(pointsForwarded: number, pointsAccepted: number) {
+  private loseMatch(name: string, result: MatchResult) {
+    const pointsForwarded = result.getTeamScore(name);
+    const pointsAccepted = result.getOtherTeamScore(name);
+
     if (pointsForwarded > pointsAccepted)
       throw new Error("Points forwarded is more than points accepted");
-    this.addGamePlayed();
+    if (result.forfeit) {
+      this.loseByForfeit();
+      return;
+    }
+
+    this.addMatchesPlayed();
     this.addLoss();
     this.addPointsForwarded(pointsForwarded);
     this.addPointsAccepted(pointsAccepted);
     this.addPoints(Points.LOSS_POINTS);
   }
 
-  drawGame(pointsForwarded: number, pointsAccepted: number) {
-    if (pointsForwarded != pointsAccepted)
+  private drawMatch(name: string, result: MatchResult) {
+    const pointsForwarded = result.getTeamScore(name);
+    const pointsAccepted = result.getOtherTeamScore(name);
+
+    if (pointsForwarded !== pointsAccepted)
       throw new Error("Points forwarded and points accepted aren't equal");
-    this.addGamePlayed();
+    this.addMatchesPlayed();
     this.addPointsForwarded(pointsForwarded);
     this.addPointsAccepted(pointsAccepted);
     this.addPoints(Points.DRAW_POINTS);
   }
 
   winByForfeit() {
-    this.addGamePlayed();
+    this.addMatchesPlayed();
     this.addWin();
     this.addPointsForwarded(20);
     this.addPointsAccepted(0); //
     this.addPoints(Points.WIN_POINTS);
   }
 
-  forfeit() {
-    this.addGamePlayed();
+  loseByForfeit() {
+    this.addMatchesPlayed();
     this.addLoss();
     this.addPointsForwarded(0);
     this.addPointsAccepted(20); //

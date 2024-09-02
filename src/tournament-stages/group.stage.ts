@@ -1,16 +1,25 @@
-import { GamePair, IStage } from "../../types";
-import { Game } from "../Game";
+import { MatchPair, IStage } from "../../types";
+import { Match } from "../Match";
 import { Group } from "../Group";
 import { Round } from "../Round";
+import { MergeSortStrategy } from "../strategies/merge-sorting.strategy";
 import { TeamRepository } from "../TeamRepository";
 import { Tournament } from "../Tournament";
+import { randomBetween } from "../utils/randomBetween.util";
 
 export class GroupStage implements IStage {
-  constructor(private tournamentContext: Tournament) {}
+  private roundGenerators: Generator<MatchPair[], void, unknown>[] = [];
+  private roundGeneratorsDone = false;
+  private roundCount = 0;
 
-  createGroups(teamRepo: TeamRepository) {
+  constructor(
+    private tournamentContext: Tournament,
+    private teamRepo: TeamRepository
+  ) {}
+
+  setGroups() {
     const groups = this.tournamentContext.getGroups();
-    const teams = teamRepo.getAllTeams();
+    const teams = this.teamRepo.getAllTeams();
     teams.forEach((team) => {
       if (!groups.has(team.group)) {
         groups.set(team.group, new Group(team.group, []));
@@ -19,42 +28,66 @@ export class GroupStage implements IStage {
     });
   }
 
-  createRounds() {
-    const roundGenerators: Generator<GamePair[], void, unknown>[] = [];
-    let generatorsDone = false;
-
+  setFirstRound() {
     for (const group of this.tournamentContext.getGroups().values()) {
-      roundGenerators.push(this.roundRobinTournament(group.getTeams()));
+      this.roundGenerators.push(this.roundRobinTournament(group.getTeams()));
     }
 
-    let roundNumber = 1;
+    this.setRound();
+  }
 
-    while (!generatorsDone) {
-      const roundName = `Round ${roundNumber}`;
-      const round = new Round(roundName, 1, []);
+  private roundName() {
+    this.roundCount++;
+    return `Round ${this.roundCount}`;
+  }
 
-      generatorsDone = true;
+  setNextRound(): void {
+    this.setRound();
+  }
 
-      for (const generator of roundGenerators) {
+  private setRound() {
+    if (!this.roundGeneratorsDone) {
+      const round = new Round(this.roundName(), 1, []);
+
+      this.roundGeneratorsDone = true;
+
+      for (const generator of this.roundGenerators) {
         const result = generator.next();
 
         if (!result.done) {
-          result.value.forEach((game) => round.addGame(new Game(game)));
-          generatorsDone = false;
+          result.value.forEach((match) =>
+            round.addMatch(new Match(match, this.teamRepo))
+          );
+          this.roundGeneratorsDone = false;
         }
       }
 
-      if (!generatorsDone)
-        this.tournamentContext.getRounds().set(roundName, round);
-
-      roundNumber++;
+      if (!this.roundGeneratorsDone) this.tournamentContext.setRound(round);
+      else {
+        throw new Error(
+          `There are no more rounds. Round generator called too many time`
+        );
+      }
     }
   }
 
-  playRounds(): void {}
+  playRound(): void {
+    const matches = this.tournamentContext.getRound().getMatches();
+
+    matches.forEach((match) => {
+      match.setResult(randomBetween(80, 120), randomBetween(80, 120));
+      match.finishGroupMatch();
+    });
+  }
+
+  rankTeams() {
+    this.tournamentContext.getGroups().forEach((group) => {
+      group.rankTeams(new MergeSortStrategy(this.teamRepo));
+    });
+  }
 
   // helper functions roundRobinTournament and pivotFirstRotateRest
-  private *roundRobinTournament(teams: string[]): Generator<GamePair[]> {
+  private *roundRobinTournament(teams: string[]): Generator<MatchPair[]> {
     if (teams.length % 2 !== 0) teams.push("dummy");
 
     const length = teams.length;
@@ -65,7 +98,7 @@ export class GroupStage implements IStage {
     for (let i = 0; i < n; i++) {
       first = 0;
       last = length - 1;
-      const round: GamePair[] = [];
+      const round: MatchPair[] = [];
 
       while (first < last) {
         if (teams[first] !== "dummy" && teams[last] !== "dummy") {

@@ -1,5 +1,5 @@
-import { GameResult } from "../types";
 import { FIBARankingStatistics } from "./FIBARankingStatistics";
+import type { MatchResult } from "./MatchResult";
 import { TeamGroupStatistics } from "./TeamGroupStatistics";
 
 export class Team {
@@ -23,8 +23,8 @@ export class Team {
     this.fibaRankingStatistics = new FIBARankingStatistics(fibaRankingPoints);
   }
 
-  resolveGame = (result: GameResult) => {
-    this.groupStatistics.resolveGame(this.name, result);
+  resolveMatch = (result: MatchResult) => {
+    this.groupStatistics.resolveMatch(this.name, result);
   };
 }
 

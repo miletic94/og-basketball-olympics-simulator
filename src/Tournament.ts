@@ -6,13 +6,14 @@ import { IStage } from "../types";
 
 export class Tournament {
   private groups: Map<string, Group> = new Map();
-  private rounds: Map<string, Round> = new Map();
+  private round: Round;
   stage: IStage;
 
   constructor(
     private teamRepo: TeamRepository,
-    stage: IStage = new GroupStage(this)
+    stage: IStage = new GroupStage(this, teamRepo)
   ) {
+    this.round = new Round("initial", 1, []);
     this.stage = stage;
   }
 
@@ -20,6 +21,7 @@ export class Tournament {
     this.stage = stage;
   }
 
+  // TODO: Does it need to be here?
   setGroups(groups: Map<string, Group>) {
     this.groups = groups;
   }
@@ -28,17 +30,31 @@ export class Tournament {
     return this.groups;
   }
 
-  getRounds() {
-    return this.rounds;
-  }
-  clearRounds() {
-    this.rounds = new Map();
-  }
-  createGroups() {
-    this.stage.createGroups(this.teamRepo);
+  setRound(round: Round) {
+    this.round = round;
   }
 
-  createRounds() {
-    this.stage.createRounds(this.teamRepo);
+  getRound() {
+    return this.round;
+  }
+
+  playRound() {
+    this.stage.playRound();
+  }
+
+  createGroups() {
+    this.stage.setGroups(this.teamRepo);
+  }
+
+  rankTeams() {
+    this.stage.rankTeams();
+  }
+
+  setFirstRound() {
+    this.stage.setFirstRound();
+  }
+
+  setNextRound() {
+    this.stage.setNextRound();
   }
 }
