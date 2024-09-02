@@ -2,10 +2,12 @@ import { MatchPair, IStage } from "../../types";
 import { Match } from "../Match";
 import { Group } from "../Group";
 import { Round } from "../Round";
+
 import { MergeSortStrategy } from "../strategies/merge-sorting.strategy";
 import { TeamRepository } from "../TeamRepository";
 import { Tournament } from "../Tournament";
 import { randomBetween } from "../utils/randomBetween.util";
+import { RoundWeight } from "./elimination.stage";
 
 export class GroupStage implements IStage {
   private roundGenerators: Generator<MatchPair[], void, unknown>[] = [];
@@ -47,7 +49,7 @@ export class GroupStage implements IStage {
 
   private setRound() {
     if (!this.roundGeneratorsDone) {
-      const round = new Round(this.roundName(), 1, []);
+      const round = new Round(this.roundName(), RoundWeight.GROUP, []);
 
       this.roundGeneratorsDone = true;
 

@@ -1,20 +1,19 @@
-import { group } from "console";
 import { IStage, Pair } from "../../types";
 import { DrawingHat } from "../DrawingHat";
 import { Match } from "../Match";
 import { Group } from "../Group";
-import { Round } from "../Round";
 import { MergeSortStrategy } from "../strategies/merge-sorting.strategy";
 import { TeamRepository } from "../TeamRepository";
 import { Tournament } from "../Tournament";
 import { randomBetween } from "../utils/randomBetween.util";
+import { Round } from "../Round";
 
 export class EliminationStage implements IStage {
   constructor(
     private tournamentContext: Tournament,
     private drawingHat: DrawingHat,
     private teamRepo: TeamRepository,
-    private roundCounter = Object.keys(RoundNames).length
+    private roundCounter = RoundName.length
   ) {}
   // TODO: Generalize
   setGroups(): void {
@@ -48,25 +47,36 @@ export class EliminationStage implements IStage {
     const randomizedBracketPairs =
       this.drawingHat.randomizeBracketPairs(matchPairs);
 
+    const roundName = this.roundName();
     const round = new Round(
-      this.roundName(),
-      2, // TODO: Should be read from round weight table
+      roundName,
+      this.roundWeight(roundName), // TODO: Should be read from round weight table
       randomizedBracketPairs.map((pair) => new Match(pair, this.teamRepo))
     );
 
     this.tournamentContext.setRound(round);
   }
 
+  private roundWeight(roundName: RoundNameType) {
+    const index = RoundNameIndex[roundName];
+    return RoundWeightMap[roundName];
+  }
+
+  /**
+   * BE CAREFUL: This method changes the class property. Use it only once per round name generation
+   * @returns string
+   */
   private roundName() {
     this.roundCounter--;
-    return RoundNames[this.roundCounter];
+    return RoundName[this.roundCounter];
   }
 
   setNextRound(): void {
     const previousRound = this.tournamentContext.getRound();
     const previousMatches = previousRound.getMatches();
     const isPreviousSemiFinal = previousRound.getRoundLength() === 2;
-    const round = new Round(this.roundName(), 2, []);
+    const roundName = this.roundName();
+    const round = new Round(roundName, this.roundWeight(roundName), []);
 
     for (let i = 0; i < previousMatches.length; i = i + 2) {
       const [matchResult1, matchResult2] = [
@@ -141,7 +151,7 @@ export class EliminationStage implements IStage {
     const matches = round.getMatches();
 
     if (
-      (round.name === RoundNames[0], // finals
+      (round.name === RoundName[0], // finals
       !matches.every((match) => {
         return match.getResult().winner !== null;
       }))
@@ -166,9 +176,32 @@ export class EliminationStage implements IStage {
   }
 }
 
-// TODO: Move
-enum RoundNames {
-  "finals",
-  "semi finals",
-  "quarter finals",
+// TODO: Move? Learn!
+// RoundName to RoundWeight mapping
+
+export enum RoundWeight {
+  GROUP = 1,
+  EIGHT_FINALS = 1,
+  QUARTER_FINALS = 2,
+  SEMI_FINALS = 4,
+  FINALS = 6,
 }
+
+export const RoundName = [
+  "finals", // Index 0
+  "semi finals", // Index 1
+  "quarter finals", // Index 2
+] as const;
+
+export type RoundNameType = (typeof RoundName)[number];
+
+export const RoundNameIndex = RoundName.reduce((acc, name, index) => {
+  acc[name] = index;
+  return acc;
+}, {} as Record<RoundNameType, number>);
+
+export const RoundWeightMap: Record<RoundNameType, RoundWeight> = {
+  finals: RoundWeight.FINALS,
+  "semi finals": RoundWeight.SEMI_FINALS,
+  "quarter finals": RoundWeight.QUARTER_FINALS,
+};

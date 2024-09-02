@@ -67,6 +67,7 @@ tournament.createGroups();
 // 1 Round
 tournament.setFirstRound();
 let round = tournament.getRound();
+console.log(round);
 
 round.getMatches().forEach((game) => {
   game.setResult(randomBetween(80, 120), randomBetween(80, 120));
@@ -82,12 +83,15 @@ tournament.getGroups().forEach((group) => {
 // 2 Round
 tournament.setNextRound();
 round = tournament.getRound();
+console.log(round);
 
 tournament.playRound();
 
 // 3 Round
 tournament.setNextRound();
 round = tournament.getRound();
+
+console.log(round);
 
 tournament.playRound();
 
@@ -102,7 +106,7 @@ tournament.createGroups();
 tournament.setFirstRound();
 round = tournament.getRound();
 
-console.log("quarter finals");
+console.log(round);
 
 tournament.playRound();
 
@@ -110,7 +114,7 @@ tournament.playRound();
 tournament.setNextRound();
 round = tournament.getRound();
 
-console.log("semi finals");
+console.log(round);
 
 tournament.playRound();
 tournament.rankTeams();
@@ -119,7 +123,7 @@ tournament.rankTeams();
 tournament.setNextRound();
 round = tournament.getRound();
 
-console.log("finals");
+console.log(round);
 
 tournament.playRound();
 
