@@ -96,7 +96,6 @@ export class GroupStage implements IStage {
   }
 
   rankTeams() {
-    console.log("RANKING TEAMS");
     this.tournamentContext.getGroups().forEach((group) => {
       group.rankTeams(new MergeSortStrategy(this.teamRepo));
     });

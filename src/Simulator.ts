@@ -1,3 +1,4 @@
+import { match } from "assert";
 import { DrawingHat } from "./DrawingHat";
 import { Exhibition } from "./Exhibition";
 import { ExhibitionLoader } from "./ExhibitionDataLoader";
@@ -5,7 +6,11 @@ import { ResultSimulator } from "./ResultSimulator";
 import { dataLoader } from "./strategies/dataLoading.strategy";
 import { TeamRepository } from "./TeamRepository";
 import { Tournament } from "./Tournament";
-import { EliminationStage } from "./tournament-stages/elimination.stage";
+import {
+  EliminationStage,
+  RoundName,
+  RoundNameIndex,
+} from "./tournament-stages/elimination.stage";
 import { GroupStage } from "./tournament-stages/group.stage";
 
 export class Simulator {
@@ -56,7 +61,7 @@ export class Simulator {
         }
         const score = match.getResult().getScore();
 
-        const string = `        ${[...score.keys()].join(" - ")}  (${[
+        const string = `\t${[...score.keys()].join(" - ")}  (${[
           ...score.values(),
         ].join(":")})`;
 
@@ -98,7 +103,18 @@ export class Simulator {
     );
     this.tournament.createGroups();
     this.tournament.setFirstRound();
-    console.log();
+
+    console.log("\nElimination stage:");
+    this.tournament
+      .getRound()
+      .getMatches()
+      .forEach((match, index) => {
+        const teams = match.getTeams();
+        let string = `\t${teams[0]} - ${teams[1]}`;
+        string = index % 2 == 1 ? string + `\n` : string;
+        console.log(string);
+      });
+
     const numOfMatches = this.tournament.getRound().getMatches().length;
     const numOfRounds = Math.log2(numOfMatches * 2);
 
@@ -111,7 +127,7 @@ export class Simulator {
       .forEach((match, index) => {
         const score = match.getResult().getScore();
 
-        let string = `        ${[...score.keys()].join(" - ")}  (${[
+        let string = `\t${[...score.keys()].join(" - ")}  (${[
           ...score.values(),
         ].join(":")})`;
 
@@ -133,11 +149,18 @@ export class Simulator {
         .forEach((match, index) => {
           const score = match.getResult().getScore();
 
-          let string = `        ${[...score.keys()].join(" - ")}  (${[
+          let string = `\t${[...score.keys()].join(" - ")}  (${[
             ...score.values(),
           ].join(":")})`;
 
           string = index % 2 === 1 ? string + `\n` : string;
+
+          string =
+            this.tournament.getRound().name === RoundName[RoundNameIndex.FINALS]
+              ? index == 0
+                ? "Gold medal match:" + string
+                : "Bronze medal match:" + string
+              : string;
 
           console.log(string);
         });
