@@ -4,14 +4,16 @@ import { Round } from "./Round";
 import { GroupStage } from "./tournament-stages/group.stage";
 import { IStage } from "../types";
 import { RoundWeight } from "./tournament-stages/elimination.stage";
+import { ResultSimulator } from "./ResultSimulator";
 
 export class Tournament {
   private groups: Map<string, Group> = new Map();
   private round: Round;
-  stage: IStage;
+  private stage: IStage;
 
   constructor(
     private teamRepo: TeamRepository,
+    public resultSimulator: ResultSimulator,
     stage: IStage = new GroupStage(this, teamRepo)
   ) {
     this.round = new Round("initial", RoundWeight.GROUP, [], teamRepo);

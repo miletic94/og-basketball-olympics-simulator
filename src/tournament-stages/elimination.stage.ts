@@ -36,7 +36,9 @@ export class EliminationStage implements IStage {
 
     this.tournamentContext.setGroups(eliminationGroups);
   }
-
+  getDrawingHat() {
+    return this.drawingHat;
+  }
   setFirstRound(): void {
     const matchPairs = this.drawingHat.drawMatchPairs(
       this.tournamentContext.getGroups()
@@ -50,7 +52,7 @@ export class EliminationStage implements IStage {
     const roundName = this.roundName();
     const round = new Round(
       roundName,
-      this.roundWeight(roundName), // TODO: Should be read from round weight table
+      this.roundWeight(roundName),
       randomizedBracketPairs.map((pair) => new Match(pair, this.teamRepo)),
       this.teamRepo
     );
@@ -129,10 +131,13 @@ export class EliminationStage implements IStage {
     const matches = this.tournamentContext.getRound().getMatches();
 
     matches.forEach((match) => {
-      let [teamScore1, teamScore2] = [
-        randomBetween(80, 120),
-        randomBetween(80, 120),
-      ];
+      const teamNames = match.getTeams();
+      const result = this.tournamentContext.resultSimulator.simulateMatchResult(
+        teamNames[0],
+        teamNames[1]
+      );
+      let teamScore1 = result[teamNames[0]] as number;
+      let teamScore2 = result[teamNames[1]] as number;
 
       if (teamScore1 === teamScore2) {
         [teamScore1, teamScore2] = this.extraTime(teamScore1, teamScore2);
@@ -142,11 +147,12 @@ export class EliminationStage implements IStage {
     });
   }
 
+  // In extra time, anyone can win
   extraTime(teamScore1: number, teamScore2: number): number[] {
     if (teamScore1 !== teamScore2) return [teamScore1, teamScore2];
 
-    teamScore1 = randomBetween(5, 20);
-    teamScore2 = randomBetween(5, 20);
+    teamScore1 += randomBetween(5, 20);
+    teamScore2 += randomBetween(5, 20);
 
     return this.extraTime(teamScore1, teamScore2);
   }
@@ -157,7 +163,7 @@ export class EliminationStage implements IStage {
     const matches = round.getMatches();
 
     if (
-      round.name !== RoundName[RoundNameIndex.finals] ||
+      round.name !== RoundName[RoundNameIndex.FINALS] ||
       !matches.every((match) => {
         return match.getResult().winner !== null;
       })
@@ -194,9 +200,9 @@ export enum RoundWeight {
 }
 
 export const RoundName = [
-  "finals", // Index 0
-  "semi finals", // Index 1
-  "quarter finals", // Index 2
+  "FINALS", // Index 0
+  "SEMI FINALS", // Index 1
+  "QUARTER FINALS", // Index 2
 ] as const;
 
 export type RoundNameType = (typeof RoundName)[number];
@@ -207,7 +213,7 @@ export const RoundNameIndex = RoundName.reduce((acc, name, index) => {
 }, {} as Record<RoundNameType, number>);
 
 export const RoundWeightMap: Record<RoundNameType, RoundWeight> = {
-  finals: RoundWeight.FINALS,
-  "semi finals": RoundWeight.SEMI_FINALS,
-  "quarter finals": RoundWeight.QUARTER_FINALS,
+  FINALS: RoundWeight.FINALS,
+  "SEMI FINALS": RoundWeight.SEMI_FINALS,
+  "QUARTER FINALS": RoundWeight.QUARTER_FINALS,
 };

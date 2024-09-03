@@ -6,7 +6,6 @@ import { Round } from "../Round";
 import { MergeSortStrategy } from "../strategies/MergeSorting.strategy";
 import { TeamRepository } from "../TeamRepository";
 import { Tournament } from "../Tournament";
-import { randomBetween } from "../utils/randomBetween.util";
 import { RoundWeight } from "./elimination.stage";
 
 export class GroupStage implements IStage {
@@ -82,12 +81,22 @@ export class GroupStage implements IStage {
     const matches = this.tournamentContext.getRound().getMatches();
 
     matches.forEach((match) => {
-      match.setResult(randomBetween(80, 120), randomBetween(80, 120));
+      const teamNames = match.getTeams();
+      const result = this.tournamentContext.resultSimulator.simulateMatchResult(
+        teamNames[0],
+        teamNames[1]
+      );
+      match.setResult(
+        result[teamNames[0]] as number,
+        result[teamNames[1]] as number,
+        result.forfeit
+      );
       match.finishGroupMatch();
     });
   }
 
   rankTeams() {
+    console.log("RANKING TEAMS");
     this.tournamentContext.getGroups().forEach((group) => {
       group.rankTeams(new MergeSortStrategy(this.teamRepo));
     });

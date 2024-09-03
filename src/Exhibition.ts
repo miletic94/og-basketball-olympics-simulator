@@ -49,9 +49,6 @@ export class Exhibition {
 
     this.round = round;
   }
-  getRound() {
-    return this.round;
-  }
 
   playRound() {
     this.round.finishRound();

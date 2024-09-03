@@ -50,6 +50,10 @@ export class Match extends EventEmitter {
     return this.result;
   }
 
+  getScore() {
+    return this.result.getScore();
+  }
+
   getTeams() {
     return this.teams;
   }

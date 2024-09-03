@@ -24,11 +24,10 @@ export class DrawingHat {
 
   drawMatchPairs(groups: Map<string, Group>) {
     const list = this.listFromGroups(groups);
-    console.log({ list });
+
     const hats = this.createPairsFromList(list);
-    console.log({ hats });
+
     const matchPairs = this.randomizePairs(hats, randomBetween);
-    console.log(matchPairs);
 
     return matchPairs;
   }

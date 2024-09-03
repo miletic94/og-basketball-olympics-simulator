@@ -20,14 +20,19 @@ export class FIBARankingStatistics
   constructor(
     private teamRepo: TeamRepository,
     private fibaPoints = 0,
-    private averagePointsPerGame = 80, // TODO: These could be variables
-    private stddevAveragePointsPerGame = 10
+    private meanPointsPerGame = 80, // TODO: These could be variables
+    private stddevPointsPerGame = 1
   ) {}
 
   getFibaPoints() {
     return this.fibaPoints;
   }
-
+  getMeanPoints() {
+    return this.meanPointsPerGame;
+  }
+  getStdDevPoints() {
+    return this.stddevPointsPerGame;
+  }
   // TODO: Not good - not terrible
   resolveRound(teamName: string, round: Round) {
     const matches = round
@@ -60,9 +65,9 @@ export class FIBARankingStatistics
 
   private updateMeanAndStdDev(newPoint: number) {
     // Update mean
-    const mean = this.averagePointsPerGame;
+    const mean = this.meanPointsPerGame;
     const n = this.previousGamesCount;
-    const stddev = this.stddevAveragePointsPerGame;
+    const stddev = this.stddevPointsPerGame;
 
     const newMean = mean + (newPoint - mean) / (n + 1);
 
@@ -75,8 +80,8 @@ export class FIBARankingStatistics
     // Update standard deviation
     const newStdDev = Math.sqrt(newVariance);
 
-    this.averagePointsPerGame = parseFloat(newMean.toPrecision(4));
-    this.stddevAveragePointsPerGame = parseFloat(newStdDev.toPrecision(4));
+    this.meanPointsPerGame = parseFloat(newMean.toPrecision(4));
+    this.stddevPointsPerGame = parseFloat(newStdDev.toPrecision(4));
   }
 
   private incrementPreviousGamesCount() {
@@ -90,7 +95,7 @@ export class FIBARankingStatistics
   }
 
   // TODO: Refactor
-  drawMatch(opponentName: string, roundWeight: number) {
+  private drawMatch(opponentName: string, roundWeight: number) {
     const basisPts = BASIS_POINTS_TABLE.winning[VictoryMargin.ZERO]; //  Draw case
     const opponentRanking = this.calculateOpponentsRanking(opponentName);
     const fibaPoints =
@@ -100,7 +105,7 @@ export class FIBARankingStatistics
     this.fibaPoints = parseFloat(fibaPoints.toFixed(1));
   }
 
-  winMatch(
+  private winMatch(
     teamName: string,
     opponentName: string,
     roundWeight: number,
@@ -123,7 +128,7 @@ export class FIBARankingStatistics
     this.fibaPoints = parseFloat(fibaPoints.toFixed(1));
   }
 
-  loseMatch(
+  private loseMatch(
     teamName: string,
     opponentName: string,
     roundWeight: number,
@@ -156,7 +161,7 @@ export class FIBARankingStatistics
     else return VictoryMargin.MORE_THAN_TWENTY; // if(Math.abs(difference) > 20)
   }
 
-  winByForfeit(opponentName: string, roundWeight: number) {
+  private winByForfeit(opponentName: string, roundWeight: number) {
     const basisPts = BASIS_POINTS_TABLE.winning[VictoryMargin.FORFEIT];
     const opponentRanking = this.calculateOpponentsRanking(opponentName);
     const fibaPoints =
@@ -166,7 +171,7 @@ export class FIBARankingStatistics
     this.fibaPoints = parseFloat(fibaPoints.toFixed(1));
   }
 
-  loseByForfeit() {
+  private loseByForfeit() {
     const forfeitPoints = 0;
     const fibaPoints =
       (this.previousGamesCount * this.fibaPoints + forfeitPoints) /
