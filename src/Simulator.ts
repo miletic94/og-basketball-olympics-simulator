@@ -104,6 +104,15 @@ export class Simulator {
     this.tournament.createGroups();
     this.tournament.setFirstRound();
 
+    console.log("Hats:");
+    const hatNames = ["D", "E", "F", "G"];
+    this.tournament.getDrawingHats().forEach((hat, index) => {
+      console.log(`Hat: ${hatNames[index]}`);
+      hat.forEach((teamName) => {
+        console.log(`\t${teamName}`);
+      });
+    });
+
     console.log("\nElimination stage:");
     this.tournament
       .getRound()

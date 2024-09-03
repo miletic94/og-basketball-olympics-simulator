@@ -6,6 +6,7 @@ import { randomBetween } from "./utils/randomBetween.util";
 import { randomizePairs } from "./utils/randomizePairs.util";
 
 export class DrawingHat {
+  private hats: Pair<string>[] = [];
   constructor() {}
   private listFromGroups(groups: Map<string, Group>) {
     const teamList: string[] = [];
@@ -22,12 +23,22 @@ export class DrawingHat {
 
   private randomizePairs = randomizePairs;
 
-  drawMatchPairs(groups: Map<string, Group>) {
+  // TODO: Redesign
+  private createDrawingHats(groups: Map<string, Group>) {
     const list = this.listFromGroups(groups);
 
     const hats = this.createPairsFromList(list);
+    this.hats = hats;
+  }
 
-    const matchPairs = this.randomizePairs(hats, randomBetween);
+  getDrawingHats() {
+    return this.hats;
+  }
+
+  drawMatchPairs(groups: Map<string, Group>) {
+    this.createDrawingHats(groups);
+
+    const matchPairs = this.randomizePairs(this.hats, randomBetween);
 
     return matchPairs;
   }

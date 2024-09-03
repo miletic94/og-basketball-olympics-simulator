@@ -36,9 +36,7 @@ export class EliminationStage implements IStage {
 
     this.tournamentContext.setGroups(eliminationGroups);
   }
-  getDrawingHat() {
-    return this.drawingHat;
-  }
+
   setFirstRound(): void {
     const matchPairs = this.drawingHat.drawMatchPairs(
       this.tournamentContext.getGroups()
@@ -58,6 +56,10 @@ export class EliminationStage implements IStage {
     );
 
     this.tournamentContext.setRound(round);
+  }
+
+  getDrawingHats() {
+    return this.drawingHat.getDrawingHats();
   }
 
   private roundWeight(roundName: RoundNameType) {

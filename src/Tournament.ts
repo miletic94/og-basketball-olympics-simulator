@@ -3,7 +3,10 @@ import { Group } from "./Group";
 import { Round } from "./Round";
 import { GroupStage } from "./tournament-stages/group.stage";
 import { IStage } from "../types";
-import { RoundWeight } from "./tournament-stages/elimination.stage";
+import {
+  EliminationStage,
+  RoundWeight,
+} from "./tournament-stages/elimination.stage";
 import { ResultSimulator } from "./ResultSimulator";
 
 export class Tournament {
@@ -18,6 +21,13 @@ export class Tournament {
   ) {
     this.round = new Round("initial", RoundWeight.GROUP, [], teamRepo);
     this.stage = stage;
+  }
+
+  getDrawingHats() {
+    if (this.stage instanceof EliminationStage) {
+      return this.stage.getDrawingHats();
+    }
+    return [];
   }
 
   setStage(stage: IStage) {
