@@ -24,8 +24,8 @@ export class Team {
     this.group = group;
     this.groupStatistics = new TeamGroupStatistics();
     this.fibaRankingStatistics = new FIBARankingStatistics(
-      fibaRankingPoints,
-      this.teamRepo
+      this.teamRepo,
+      fibaRankingPoints
     );
   }
 

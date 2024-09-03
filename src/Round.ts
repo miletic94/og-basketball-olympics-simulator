@@ -18,7 +18,10 @@ export class Round extends EventEmitter {
     this.matches.push(match);
 
     match.getTeams().forEach((team) => {
-      this.on("finish_round", this.teamRepo.getTeam(team).resolveRound);
+      const listeners = this.listeners("finish_round");
+      if (!listeners.includes(this.teamRepo.getTeam(team).resolveRound)) {
+        this.on("finish_round", this.teamRepo.getTeam(team).resolveRound);
+      }
     });
   }
 

@@ -37,7 +37,7 @@ describe("FIBARankingStatistics", () => {
 
     ranking.resolveRound("Team1", round);
 
-    expect(ranking.getPoints()).toBeCloseTo(236.7, 1);
+    expect(ranking.getFibaPoints()).toBeCloseTo(236.7, 1);
     expect(teamRepo.getAverageFIBAPoints).toHaveBeenCalled();
     expect(teamRepo.getTeamFIBAPoints).toHaveBeenCalledWith("Opponent");
   });
@@ -50,7 +50,7 @@ describe("FIBARankingStatistics", () => {
 
     ranking.resolveRound("Team1", round);
 
-    expect(ranking.getPoints()).toBeCloseTo(260.5, 1); // Example expected value
+    expect(ranking.getFibaPoints()).toBeCloseTo(260.5, 1); // Example expected value
   });
 
   it("should calculate points correctly for a loss", () => {
@@ -61,7 +61,7 @@ describe("FIBARankingStatistics", () => {
 
     ranking.resolveRound("Team1", round);
 
-    expect(ranking.getPoints()).toBeCloseTo(212.9, 1); // Example expected value
+    expect(ranking.getFibaPoints()).toBeCloseTo(212.9, 1); // Example expected value
   });
 
   it("should handle win by forfeit correctly", () => {
@@ -72,7 +72,7 @@ describe("FIBARankingStatistics", () => {
 
     ranking.resolveRound("Team1", round);
 
-    expect(ranking.getPoints()).toBeCloseTo(265.2, 1); // Example expected value
+    expect(ranking.getFibaPoints()).toBeCloseTo(265.2, 1); // Example expected value
   });
 
   it("should handle loss by forfeit correctly", () => {
@@ -83,7 +83,7 @@ describe("FIBARankingStatistics", () => {
 
     ranking.resolveRound("Team1", round);
 
-    expect(ranking.getPoints()).toBeCloseTo(190.5, 1); // Example expected value
+    expect(ranking.getFibaPoints()).toBeCloseTo(190.5, 1); // Example expected value
   });
 
   it("should compare rankings correctly", () => {
