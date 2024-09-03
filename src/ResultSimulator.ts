@@ -1,5 +1,5 @@
-import { Team } from "./Team";
-import { TeamRepository } from "./TeamRepository";
+import { Team } from "./team/Team";
+import { TeamRepository } from "./team/TeamRepository";
 
 export class ResultSimulator {
   constructor(private teamRepo: TeamRepository) {}

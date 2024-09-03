@@ -1,17 +1,17 @@
 import { match } from "assert";
-import { DrawingHat } from "./DrawingHat";
-import { Exhibition } from "./Exhibition";
-import { ExhibitionLoader } from "./ExhibitionDataLoader";
+import { DrawingHat } from "./tournament/DrawingHat";
+import { Exhibition } from "./exhibition/Exhibition";
+import { ExhibitionLoader } from "./Exhibition/ExhibitionDataLoader";
 import { ResultSimulator } from "./ResultSimulator";
 import { dataLoader } from "./strategies/dataLoading.strategy";
-import { TeamRepository } from "./TeamRepository";
-import { Tournament } from "./Tournament";
+import { TeamRepository } from "./team/TeamRepository";
+import { Tournament } from "./tournament/Tournament";
 import {
   EliminationStage,
   RoundName,
   RoundNameIndex,
-} from "./tournament-stages/elimination.stage";
-import { GroupStage } from "./tournament-stages/group.stage";
+} from "./tournament/stages/elimination.stage";
+import { GroupStage } from "./tournament/stages/group.stage";
 
 export class Simulator {
   private teamRepo: TeamRepository;

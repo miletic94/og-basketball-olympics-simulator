@@ -1,4 +1,4 @@
-import type { Team } from "../src/Team";
+import type { Team } from "../src/team/Team";
 import { IComparer } from "./comparer.interface";
 
 export type SortFunction = (

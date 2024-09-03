@@ -1,13 +1,10 @@
-import { TeamRepository } from "./TeamRepository";
-import { Group } from "./Group";
-import { Round } from "./Round";
-import { GroupStage } from "./tournament-stages/group.stage";
-import { IStage } from "../types";
-import {
-  EliminationStage,
-  RoundWeight,
-} from "./tournament-stages/elimination.stage";
-import { ResultSimulator } from "./ResultSimulator";
+import { TeamRepository } from "../team/TeamRepository";
+import { Group } from "../Group";
+import { Round } from "../Round";
+import { GroupStage } from "./stages/group.stage";
+import { IStage } from "../../types";
+import { EliminationStage, RoundWeight } from "./stages/elimination.stage";
+import { ResultSimulator } from "../ResultSimulator";
 
 export class Tournament {
   private groups: Map<string, Group> = new Map();

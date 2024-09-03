@@ -1,12 +1,12 @@
-import { IStage, Pair } from "../../types";
+import { IStage, Pair } from "../../../types";
 import { DrawingHat } from "../DrawingHat";
-import { Match } from "../Match";
-import { Group } from "../Group";
-import { MergeSortStrategy } from "../strategies/MergeSorting.strategy";
-import { TeamRepository } from "../TeamRepository";
+import { Match } from "../../match/Match";
+import { Group } from "../../Group";
+import { MergeSortStrategy } from "../../strategies/MergeSorting.strategy";
+import { TeamRepository } from "../../team/TeamRepository";
 import { Tournament } from "../Tournament";
-import { randomBetween } from "../utils/randomBetween.util";
-import { Round } from "../Round";
+import { randomBetween } from "../../utils/randomBetween.util";
+import { Round } from "../../Round";
 
 export class EliminationStage implements IStage {
   constructor(

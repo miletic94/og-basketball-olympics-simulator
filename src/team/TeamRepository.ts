@@ -1,5 +1,5 @@
-import { DataLoader, TeamData } from "../types";
-import { TEAM_DATA_PATH } from "./constants/teamDataPath.const";
+import { DataLoader, TeamData } from "../../types";
+import { TEAM_DATA_PATH } from "../constants/teamDataPath.const";
 import { Team } from "./Team";
 
 export class TeamRepository {

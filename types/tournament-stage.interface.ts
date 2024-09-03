@@ -1,4 +1,4 @@
-import type { TeamRepository } from "../src/TeamRepository";
+import type { TeamRepository } from "../src/team/TeamRepository";
 
 export interface IStage {
   setGroups(teamRepo: TeamRepository): void;

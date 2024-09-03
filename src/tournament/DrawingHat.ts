@@ -1,9 +1,9 @@
-import { Pair } from "../types";
-import { Group } from "./Group";
+import { Pair } from "../../types";
+import { Group } from "../Group";
 import { Tournament } from "./Tournament";
-import { createPairsFromList } from "./utils/createPairsFromLIst.util";
-import { randomBetween } from "./utils/randomBetween.util";
-import { randomizePairs } from "./utils/randomizePairs.util";
+import { createPairsFromList } from "../utils/createPairsFromLIst.util";
+import { randomBetween } from "../utils/randomBetween.util";
+import { randomizePairs } from "../utils/randomizePairs.util";
 
 export class DrawingHat {
   private hats: Pair<string>[] = [];

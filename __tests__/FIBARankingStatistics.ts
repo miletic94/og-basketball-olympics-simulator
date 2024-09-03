@@ -1,7 +1,7 @@
-import { FIBARankingStatistics } from "../src/FIBARankingStatistics";
-import { MatchResult } from "../src/MatchResult";
+import { FIBARankingStatistics } from "../src/team/FIBARankingStatistics";
+import { MatchResult } from "../src/match/MatchResult";
 import { Round } from "../src/Round";
-import { TeamRepository } from "../src/TeamRepository";
+import { TeamRepository } from "../src/team/TeamRepository";
 
 describe("FIBARankingStatistics", () => {
   let teamRepo: jest.Mocked<TeamRepository>;
@@ -33,7 +33,7 @@ describe("FIBARankingStatistics", () => {
   });
 
   it("should calculate points correctly for a drawn match", () => {
-    const ranking = new FIBARankingStatistics(200, teamRepo);
+    const ranking = new FIBARankingStatistics(teamRepo, 200);
 
     ranking.resolveRound("Team1", round);
 
@@ -46,7 +46,7 @@ describe("FIBARankingStatistics", () => {
     matchResult.winner = "Team1";
     matchResult.getTeamScore.mockReturnValueOnce(80).mockReturnValueOnce(60);
 
-    const ranking = new FIBARankingStatistics(200, teamRepo);
+    const ranking = new FIBARankingStatistics(teamRepo, 200);
 
     ranking.resolveRound("Team1", round);
 
@@ -57,7 +57,7 @@ describe("FIBARankingStatistics", () => {
     matchResult.winner = "Opponent";
     matchResult.getTeamScore.mockReturnValueOnce(60).mockReturnValueOnce(80);
 
-    const ranking = new FIBARankingStatistics(200, teamRepo);
+    const ranking = new FIBARankingStatistics(teamRepo, 200);
 
     ranking.resolveRound("Team1", round);
 
@@ -68,7 +68,7 @@ describe("FIBARankingStatistics", () => {
     matchResult.winner = "Team1";
     matchResult.forfeit = true;
 
-    const ranking = new FIBARankingStatistics(200, teamRepo);
+    const ranking = new FIBARankingStatistics(teamRepo, 200);
 
     ranking.resolveRound("Team1", round);
 
@@ -79,7 +79,7 @@ describe("FIBARankingStatistics", () => {
     matchResult.winner = "Opponent";
     matchResult.forfeit = true;
 
-    const ranking = new FIBARankingStatistics(200, teamRepo);
+    const ranking = new FIBARankingStatistics(teamRepo, 200);
 
     ranking.resolveRound("Team1", round);
 
@@ -87,8 +87,8 @@ describe("FIBARankingStatistics", () => {
   });
 
   it("should compare rankings correctly", () => {
-    const ranking1 = new FIBARankingStatistics(250, teamRepo);
-    const ranking2 = new FIBARankingStatistics(200, teamRepo);
+    const ranking1 = new FIBARankingStatistics(teamRepo, 250);
+    const ranking2 = new FIBARankingStatistics(teamRepo, 200);
 
     expect(ranking1.compareTo(ranking2)).toBeGreaterThan(0);
     expect(ranking2.compareTo(ranking1)).toBeLessThan(0);

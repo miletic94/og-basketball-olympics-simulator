@@ -1,10 +1,10 @@
-import { MatchPair, IStage } from "../../types";
-import { Match } from "../Match";
-import { Group } from "../Group";
-import { Round } from "../Round";
+import { MatchPair, IStage } from "../../../types";
+import { Match } from "../../match/Match";
+import { Group } from "../../Group";
+import { Round } from "../../Round";
 
-import { MergeSortStrategy } from "../strategies/MergeSorting.strategy";
-import { TeamRepository } from "../TeamRepository";
+import { MergeSortStrategy } from "../../strategies/MergeSorting.strategy";
+import { TeamRepository } from "../../team/TeamRepository";
 import { Tournament } from "../Tournament";
 import { RoundWeight } from "./elimination.stage";
 

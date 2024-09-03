@@ -1,7 +1,7 @@
 import { FIBARankingStatistics } from "./FIBARankingStatistics";
-import { Match } from "./Match";
-import type { MatchResult } from "./MatchResult";
-import { Round } from "./Round";
+import { Match } from "../match/Match";
+import type { MatchResult } from "../match/MatchResult";
+import { Round } from "../Round";
 import { TeamGroupStatistics } from "./TeamGroupStatistics";
 import { TeamRepository } from "./TeamRepository";
 

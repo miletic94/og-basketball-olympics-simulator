@@ -1,7 +1,7 @@
 import { ISortStrategy, ITeamRanker } from "../types";
 import { TeamGroupComparer } from "./comparers/Comparers";
 import {} from "./strategies/MergeSorting.strategy";
-import { TeamRepository } from "./TeamRepository";
+import { TeamRepository } from "./team/TeamRepository";
 
 export class Group implements ITeamRanker {
   name: string;

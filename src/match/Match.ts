@@ -1,7 +1,7 @@
 import EventEmitter from "events";
-import type { Team } from "./Team";
-import { MatchPair, Pair } from "../types";
-import { TeamRepository } from "./TeamRepository";
+import type { Team } from "../team/Team";
+import { MatchPair, Pair } from "../../types";
+import { TeamRepository } from "../team/TeamRepository";
 import { MatchResult } from "./MatchResult";
 
 // TODO: Rename to Match

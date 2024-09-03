@@ -1,5 +1,5 @@
 import { IComparer } from "../../types";
-import type { Team } from "../Team";
+import type { Team } from "../team/Team";
 
 // TODO: Put comparers in their own files
 export class TeamGroupComparer implements IComparer<Team> {

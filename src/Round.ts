@@ -1,7 +1,7 @@
 import EventEmitter from "events";
-import { Match } from "./Match";
-import { RoundWeight } from "./tournament-stages/elimination.stage";
-import { TeamRepository } from "./TeamRepository";
+import { Match } from "./match/Match";
+import { RoundWeight } from "./tournament/stages/elimination.stage";
+import { TeamRepository } from "./team/TeamRepository";
 
 export class Round extends EventEmitter {
   constructor(

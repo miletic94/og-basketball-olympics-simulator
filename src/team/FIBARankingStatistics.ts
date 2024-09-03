@@ -1,10 +1,10 @@
-import { IComparable } from "../types";
+import { IComparable } from "../../types";
 import {
   BASIS_POINTS_TABLE,
   VictoryMargin,
-} from "./constants/basisFIBAPointsTable.const";
-import { MatchResult } from "./MatchResult";
-import { Round } from "./Round";
+} from "../constants/basisFIBAPointsTable.const";
+import { MatchResult } from "../match/MatchResult";
+import { Round } from "../Round";
 import { TeamRepository } from "./TeamRepository";
 
 export class FIBARankingStatistics

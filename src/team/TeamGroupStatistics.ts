@@ -1,6 +1,6 @@
 import { Points } from "./Team";
-import { IComparable } from "../types";
-import { MatchResult } from "./MatchResult";
+import { IComparable } from "../../types";
+import { MatchResult } from "../match/MatchResult";
 
 export class TeamGroupStatistics implements IComparable<TeamGroupStatistics> {
   matchesPlayed: number;

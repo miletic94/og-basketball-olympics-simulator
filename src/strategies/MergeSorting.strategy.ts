@@ -1,6 +1,6 @@
 import { IComparer, ISortStrategy } from "../../types";
-import type { Team } from "../Team";
-import { TeamRepository } from "../TeamRepository";
+import type { Team } from "../team/Team";
+import { TeamRepository } from "../team/TeamRepository";
 
 export class MergeSortStrategy implements ISortStrategy {
   constructor(private teamRepo: TeamRepository) {}
