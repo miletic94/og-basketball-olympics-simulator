@@ -26,7 +26,7 @@ export class TeamRepository {
       data[group].map((team: TeamData) => {
         this.teams.set(
           team.Team,
-          new Team(team.Team, team.ISOCode, group, team.Points)
+          new Team(team.Team, team.ISOCode, group, team.Points, this)
         );
       });
     });
@@ -46,6 +46,17 @@ export class TeamRepository {
     });
   }
 
+  getAverageFIBAPoints() {
+    const teams = this.getAllTeams();
+    const sum = teams.reduce((acc, curr) => {
+      return acc + curr.fibaRankingStatistics.getPoints();
+    }, 0);
+    return sum / teams.length;
+  }
+
+  getTeamFIBAPoints(teamName: string) {
+    return this.getTeam(teamName).fibaRankingStatistics.getPoints();
+  }
   // TODO: Delete if not needed
   // addTeam(team: Team) {
   //   this.teams.set(team.name, team);

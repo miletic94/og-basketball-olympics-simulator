@@ -1,10 +1,8 @@
 import { DrawingHat } from "./DrawingHat";
-import { FibaRankingTable } from "./FIBARankingTable";
 import { Match } from "./Match";
 import { Group } from "./Group";
-import { GroupRankingTable } from "./GroupRankingTable";
-import { dataLoader } from "./strategies/data-loading.strategy";
-import { MergeSortStrategy } from "./strategies/merge-sorting.strategy";
+import { dataLoader } from "./strategies/dataLoading.strategy";
+import { MergeSortStrategy } from "./strategies/MergeSorting.strategy";
 import { Team } from "./Team";
 import { TeamRepository } from "./TeamRepository";
 import { Tournament } from "./Tournament";
@@ -67,23 +65,30 @@ tournament.createGroups();
 // 1 Round
 tournament.setFirstRound();
 let round = tournament.getRound();
-console.log(round);
+// console.log(round);
 
-round.getMatches().forEach((game) => {
-  game.setResult(randomBetween(80, 120), randomBetween(80, 120));
-  //   console.log(game.getResult());
-  game.finishGroupMatch();
+teamRepo.getAllTeams().forEach((team) => {
+  console.log({
+    teamName: team.name,
+    FIBApts: team.fibaRankingStatistics.getPoints(),
+  });
 });
+console.log(" ");
 
-tournament.getGroups().forEach((group) => {
-  group.rankTeams(new MergeSortStrategy(teamRepo));
-  //   console.log(group);
+tournament.playRound();
+round.finishRound();
+
+teamRepo.getAllTeams().forEach((team) => {
+  console.log({
+    teamName: team.name,
+    FIBApts: team.fibaRankingStatistics.getPoints(),
+  });
 });
 
 // 2 Round
 tournament.setNextRound();
 round = tournament.getRound();
-console.log(round);
+// console.log(round);
 
 tournament.playRound();
 
@@ -91,39 +96,40 @@ tournament.playRound();
 tournament.setNextRound();
 round = tournament.getRound();
 
-console.log(round);
+// console.log(round);
 
 tournament.playRound();
 
 tournament.rankTeams();
-// EliminationStage
+
+// ELIMINATION STAGE
 tournament.setStage(
   new EliminationStage(tournament, new DrawingHat(), teamRepo)
 );
 tournament.createGroups();
 
-// quarter finals
+// QUARTER FINALS
 tournament.setFirstRound();
 round = tournament.getRound();
 
-console.log(round);
+// console.log(round);
 
 tournament.playRound();
 
-// semi finals
+// SEMI FINALS
 tournament.setNextRound();
 round = tournament.getRound();
 
-console.log(round);
+// console.log(round);
 
 tournament.playRound();
-tournament.rankTeams();
+// tournament.rankTeams(); // This should fail
 
-// finals
+// FINALS
 tournament.setNextRound();
 round = tournament.getRound();
 
-console.log(round);
+// console.log(round);
 
 tournament.playRound();
 

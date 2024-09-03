@@ -1,5 +1,5 @@
 import EventEmitter from "events";
-import { Team } from "./Team";
+import type { Team } from "./Team";
 import { MatchPair, Pair } from "../types";
 import { TeamRepository } from "./TeamRepository";
 import { MatchResult } from "./MatchResult";
@@ -7,18 +7,16 @@ import { MatchResult } from "./MatchResult";
 // TODO: Rename to Match
 export class Match extends EventEmitter {
   private result: MatchResult;
-  homeTeam: string;
-  awayTeam: string;
+  private teams: MatchPair;
 
   constructor(teams: MatchPair, private teamRepo: TeamRepository) {
     super();
-    this.homeTeam = teams[0];
-    this.awayTeam = teams[1];
+    this.teams = teams;
 
     this.result = new MatchResult(
       new Map([
-        [this.homeTeam, 0],
-        [this.awayTeam, 0],
+        [this.teams[0], 0],
+        [this.teams[1], 0],
       ]) as Map<any, any> & { size: 2 },
       false,
       null
@@ -26,30 +24,40 @@ export class Match extends EventEmitter {
 
     this.registerTeamListeners(
       this.teamRepo.getTeamsByNames([
-        this.homeTeam,
-        this.awayTeam,
+        this.teams[0],
+        this.teams[1],
       ]) as Pair<Team>
     );
   }
 
   private winnerName(): string | null {
-    const homeTeamScore = this.result.getTeamScore(this.homeTeam);
-    const awayTeamScore = this.result.getTeamScore(this.awayTeam);
+    const homeTeamScore = this.result.getTeamScore(this.teams[0]);
+    const awayTeamScore = this.result.getTeamScore(this.teams[1]);
 
     if (homeTeamScore === awayTeamScore) return null;
-    if (homeTeamScore > awayTeamScore) return this.homeTeam;
-    return this.awayTeam;
+    if (homeTeamScore > awayTeamScore) return this.teams[0];
+    return this.teams[1];
   }
 
   setResult(homeTeamScore: number, awayTeamScore: number, forfeit = false) {
-    this.result.setTeamScore(this.homeTeam, homeTeamScore);
-    this.result.setTeamScore(this.awayTeam, awayTeamScore);
+    this.result.setTeamScore(this.teams[0], homeTeamScore);
+    this.result.setTeamScore(this.teams[1], awayTeamScore);
     this.result.forfeit = forfeit;
     this.result.winner = this.winnerName();
   }
 
   getResult() {
     return this.result;
+  }
+
+  getTeams() {
+    return this.teams;
+  }
+
+  getTeam(teamName: string) {
+    const team = this.getTeams().find((team) => team === teamName);
+    // if (!team) throw new Error(`Team with name ${teamName} not found`);
+    return team;
   }
 
   registerTeamListeners(teams: Pair<Team>) {

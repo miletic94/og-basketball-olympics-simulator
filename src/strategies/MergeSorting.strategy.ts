@@ -1,5 +1,5 @@
 import { IComparer, ISortStrategy } from "../../types";
-import { Team } from "../Team";
+import type { Team } from "../Team";
 import { TeamRepository } from "../TeamRepository";
 
 export class MergeSortStrategy implements ISortStrategy {

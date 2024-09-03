@@ -2,7 +2,7 @@ import { IStage, Pair } from "../../types";
 import { DrawingHat } from "../DrawingHat";
 import { Match } from "../Match";
 import { Group } from "../Group";
-import { MergeSortStrategy } from "../strategies/merge-sorting.strategy";
+import { MergeSortStrategy } from "../strategies/MergeSorting.strategy";
 import { TeamRepository } from "../TeamRepository";
 import { Tournament } from "../Tournament";
 import { randomBetween } from "../utils/randomBetween.util";
@@ -51,7 +51,8 @@ export class EliminationStage implements IStage {
     const round = new Round(
       roundName,
       this.roundWeight(roundName), // TODO: Should be read from round weight table
-      randomizedBracketPairs.map((pair) => new Match(pair, this.teamRepo))
+      randomizedBracketPairs.map((pair) => new Match(pair, this.teamRepo)),
+      this.teamRepo
     );
 
     this.tournamentContext.setRound(round);
@@ -76,7 +77,12 @@ export class EliminationStage implements IStage {
     const previousMatches = previousRound.getMatches();
     const isPreviousSemiFinal = previousRound.getRoundLength() === 2;
     const roundName = this.roundName();
-    const round = new Round(roundName, this.roundWeight(roundName), []);
+    const round = new Round(
+      roundName,
+      this.roundWeight(roundName),
+      [],
+      this.teamRepo
+    );
 
     for (let i = 0; i < previousMatches.length; i = i + 2) {
       const [matchResult1, matchResult2] = [
@@ -151,10 +157,10 @@ export class EliminationStage implements IStage {
     const matches = round.getMatches();
 
     if (
-      (round.name === RoundName[0], // finals
+      round.name !== RoundName[RoundNameIndex.finals] ||
       !matches.every((match) => {
         return match.getResult().winner !== null;
-      }))
+      })
     ) {
       throw new Error(
         "To rank matches at the final stage every match needs to be finished and round needs to be finals"

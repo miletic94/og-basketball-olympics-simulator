@@ -1,6 +1,9 @@
 import { FIBARankingStatistics } from "./FIBARankingStatistics";
+import { Match } from "./Match";
 import type { MatchResult } from "./MatchResult";
+import { Round } from "./Round";
 import { TeamGroupStatistics } from "./TeamGroupStatistics";
+import { TeamRepository } from "./TeamRepository";
 
 export class Team {
   name: string;
@@ -13,18 +16,24 @@ export class Team {
     name: string,
     ISOCode: string,
     group: string,
-    fibaRankingPoints: number
+    fibaRankingPoints: number,
+    private teamRepo: TeamRepository
   ) {
     this.name = name;
     this.ISOCode = ISOCode;
     this.group = group;
-    // TODO: This could be injected (DI)
     this.groupStatistics = new TeamGroupStatistics();
-    this.fibaRankingStatistics = new FIBARankingStatistics(fibaRankingPoints);
+    this.fibaRankingStatistics = new FIBARankingStatistics(
+      fibaRankingPoints,
+      this.teamRepo
+    );
   }
 
   resolveMatch = (result: MatchResult) => {
     this.groupStatistics.resolveMatch(this.name, result);
+  };
+  resolveRound = (round: Round) => {
+    this.fibaRankingStatistics.resolveRound(this.name, round);
   };
 }
 

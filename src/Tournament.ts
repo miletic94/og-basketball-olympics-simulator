@@ -14,7 +14,7 @@ export class Tournament {
     private teamRepo: TeamRepository,
     stage: IStage = new GroupStage(this, teamRepo)
   ) {
-    this.round = new Round("initial", RoundWeight.GROUP, []);
+    this.round = new Round("initial", RoundWeight.GROUP, [], teamRepo);
     this.stage = stage;
   }
 

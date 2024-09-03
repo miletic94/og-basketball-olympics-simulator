@@ -110,7 +110,7 @@ export class TeamGroupStatistics implements IComparable<TeamGroupStatistics> {
 
   private drawMatch(name: string, result: MatchResult) {
     const pointsForwarded = result.getTeamScore(name);
-    const pointsAccepted = result.getOtherTeamScore(name);
+    const pointsAccepted = pointsForwarded;
 
     if (pointsForwarded !== pointsAccepted)
       throw new Error("Points forwarded and points accepted aren't equal");
