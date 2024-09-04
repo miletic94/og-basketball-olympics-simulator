@@ -1,12 +1,13 @@
 import { EXHIBITION_PATH } from "../constants/exhibitionsPath.const";
-import {
-  ExhibitionLoader,
-  ExhibitionMatchesDataType,
-} from "./ExhibitionDataLoader";
+
 import { Match } from "../match/Match";
 import { Round } from "../Round";
 import { ISOtoNameMap, TeamRepository } from "../team/TeamRepository";
 import { RoundWeight } from "../tournament/stages/elimination.stage";
+import {
+  ExhibitionLoader,
+  ExhibitionMatchesDataType,
+} from "./ExhibitionDataLoader";
 
 export class Exhibition {
   private exhibitionMatchesData: ExhibitionMatchesDataType;

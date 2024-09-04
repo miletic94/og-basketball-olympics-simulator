@@ -1,28 +1,26 @@
-import { match } from "assert";
 import { DrawingHat } from "./tournament/DrawingHat";
 import { Exhibition } from "./exhibition/Exhibition";
-import { ExhibitionLoader } from "./Exhibition/ExhibitionDataLoader";
 import { ResultSimulator } from "./ResultSimulator";
 import { dataLoader } from "./strategies/dataLoading.strategy";
 import { TeamRepository } from "./team/TeamRepository";
 import { Tournament } from "./tournament/Tournament";
-import {
-  EliminationStage,
-  RoundName,
-  RoundNameIndex,
-} from "./tournament/stages/elimination.stage";
+import { EliminationStage } from "./tournament/stages/elimination.stage";
 import { GroupStage } from "./tournament/stages/group.stage";
+import { SimulationLogger } from "./SimulationLogger";
+import { ExhibitionLoader } from "./exhibition/ExhibitionDataLoader";
 
 export class Simulator {
   private teamRepo: TeamRepository;
   private tournament: Tournament;
   private resultSimulator: ResultSimulator;
   private exhibition: Exhibition;
+  private simulationLogger: SimulationLogger;
   constructor() {
     this.teamRepo = TeamRepository.getInstance(dataLoader);
     this.exhibition = new Exhibition(ExhibitionLoader, this.teamRepo);
     this.resultSimulator = new ResultSimulator(this.teamRepo);
     this.tournament = new Tournament(this.teamRepo, this.resultSimulator);
+    this.simulationLogger = new SimulationLogger();
   }
   simulate() {
     this.playExhibition();
@@ -49,52 +47,16 @@ export class Simulator {
       this.tournament.playRound();
       const round = this.tournament.getRound();
 
-      console.log(`${round.name}`);
-      let groupName = "";
-      round.getMatches().forEach((match) => {
-        const teamNames = match.getTeams();
-        const teams = this.teamRepo.getTeamsByNames(teamNames);
-        const group = teams[0].group;
-        if (group !== groupName) {
-          console.log(`     Group ${group}`);
-          groupName = group;
-        }
-        const score = match.getResult().getScore();
-
-        const string = `\t${[...score.keys()].join(" - ")}  (${[
-          ...score.values(),
-        ].join(":")})`;
-
-        console.log(string);
-      });
+      this.simulationLogger.logGroupStageRound(round, this.teamRepo);
 
       this.tournament.getRound().finishRound();
     }
     this.tournament.rankTeams();
 
-    console.log(`\nFinal group rankings:`);
-    this.tournament.getGroups().forEach((group) => {
-      const teamNames = group.getTeams();
-      const teams = this.teamRepo.getTeamsByNames(teamNames);
-
-      console.log(`\nGroup ${group.name}:`);
-      console.log(`rank name\twins\tlosses\tpoints\tPF\tPA\tPD`);
-      teams.forEach((team, index) => {
-        let teamName;
-        team.name === "USA"
-          ? (teamName = `${team.name}\t`)
-          : (teamName = team.name);
-        console.log(
-          `${index + 1}. ${teamName}\t${team.groupStatistics.wins}\t${
-            team.groupStatistics.losses
-          }\t${team.groupStatistics.points}\t${
-            team.groupStatistics.pointsForwarded
-          }\t${
-            team.groupStatistics.pointsAccepted
-          }\t${team.groupStatistics.getPointDifference()}`
-        );
-      });
-    });
+    this.simulationLogger.logFinalGroupRankings(
+      this.tournament.getGroups(),
+      this.teamRepo
+    );
   }
 
   private playEliminationStage() {
@@ -104,46 +66,21 @@ export class Simulator {
     this.tournament.createGroups();
     this.tournament.setFirstRound();
 
-    console.log("Hats:");
-    const hatNames = ["D", "E", "F", "G"];
-    this.tournament.getDrawingHats().forEach((hat, index) => {
-      console.log(`Hat: ${hatNames[index]}`);
-      hat.forEach((teamName) => {
-        console.log(`\t${teamName}`);
-      });
-    });
+    this.simulationLogger.logDrawingHats(this.tournament.getDrawingHats());
 
-    console.log("\nElimination stage:");
-    this.tournament
-      .getRound()
-      .getMatches()
-      .forEach((match, index) => {
-        const teams = match.getTeams();
-        let string = `\t${teams[0]} - ${teams[1]}`;
-        string = index % 2 == 1 ? string + `\n` : string;
-        console.log(string);
-      });
+    this.simulationLogger.logEliminationStagePairs(
+      this.tournament.getRound().getMatches()
+    );
 
     const numOfMatches = this.tournament.getRound().getMatches().length;
     const numOfRounds = Math.log2(numOfMatches * 2);
 
     this.tournament.playRound();
 
-    console.log(`${this.tournament.getRound().name}`);
-    this.tournament
-      .getRound()
-      .getMatches()
-      .forEach((match, index) => {
-        const score = match.getResult().getScore();
-
-        let string = `\t${[...score.keys()].join(" - ")}  (${[
-          ...score.values(),
-        ].join(":")})`;
-
-        string = index % 2 === 1 ? string + `\n` : string;
-
-        console.log(string);
-      });
+    this.simulationLogger.loadEliminationStageRound(
+      this.tournament.getRound().getMatches(),
+      this.tournament.getRound().name
+    );
 
     this.tournament.getRound().finishRound();
 
@@ -151,40 +88,16 @@ export class Simulator {
       this.tournament.setNextRound();
       this.tournament.playRound();
 
-      console.log(`${this.tournament.getRound().name}`);
-      this.tournament
-        .getRound()
-        .getMatches()
-        .forEach((match, index) => {
-          const score = match.getResult().getScore();
-
-          let string = `\t${[...score.keys()].join(" - ")}  (${[
-            ...score.values(),
-          ].join(":")})`;
-
-          string = index % 2 === 1 ? string + `\n` : string;
-
-          string =
-            this.tournament.getRound().name === RoundName[RoundNameIndex.FINALS]
-              ? index == 0
-                ? "Gold medal match:" + string
-                : "Bronze medal match:" + string
-              : string;
-
-          console.log(string);
-        });
+      this.simulationLogger.loadEliminationStageRound(
+        this.tournament.getRound().getMatches(),
+        this.tournament.getRound().name
+      );
 
       this.tournament.getRound().finishRound();
     }
     this.tournament.rankTeams();
 
-    console.log("Medals:");
-    this.tournament.getGroups().forEach((group) => {
-      const teams = group.getTeams();
-      for (let i = 0; i < teams.length - 1; i++) {
-        console.log(`\t${i + 1}. ${teams[i]}`);
-      }
-    });
+    this.simulationLogger.logMedals(this.tournament.getGroups());
   }
 
   // TODO: Should be util
